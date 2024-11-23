@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { FaBars, FaColumns, FaPlusCircle, FaClipboardList, FaCreditCard } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -17,22 +18,34 @@ const Sidebar = () => {
 
       {/* Sidebar Links */}
       <ul className={`flex-col lg:flex ${isOpen ? "block" : "hidden"} lg:block`}>
-        <li className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition">
+        <Link
+          to="/"
+          className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition"
+        >
           <FaColumns />
           <span className="hidden lg:block">Dashboard</span>
-        </li>
-        <li className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition">
+        </Link>
+        <Link
+          to="/new-quotes"
+          className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition"
+        >
           <FaPlusCircle />
           <span className="hidden lg:block">New Quotes</span>
-        </li>
-        <li className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition">
+        </Link>
+        <Link
+          to="/orders"
+          className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition"
+        >
           <FaClipboardList />
           <span className="hidden lg:block">Orders</span>
-        </li>
-        <li className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition">
+        </Link>
+        <Link
+          to="/payments"
+          className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition"
+        >
           <FaCreditCard />
           <span className="hidden lg:block">Payments</span>
-        </li>
+        </Link>
       </ul>
     </div>
   );
