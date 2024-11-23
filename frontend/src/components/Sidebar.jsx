@@ -1,53 +1,85 @@
+import { NavLink } from "react-router-dom";
+import {
+  FaPlusCircle,
+  FaColumns,
+  FaClipboardList,
+  FaCreditCard,
+  FaBars,
+} from "react-icons/fa";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaBars, FaColumns, FaPlusCircle, FaClipboardList, FaCreditCard } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <div className="lg:w-64 w-20 bg-blue-200 text-gray-800 flex flex-col h-full">
-      {/* Header */}
-      <div className="p-4 flex justify-between items-center lg:block">
-        <h2 className="hidden lg:block text-2xl font-bold">Client</h2>
-        <FaBars
-          className="lg:hidden text-xl cursor-pointer"
-          onClick={() => setIsOpen(!isOpen)}
-        />
-      </div>
 
-      {/* Sidebar Links */}
-      <ul className={`flex-col lg:flex ${isOpen ? "block" : "hidden"} lg:block`}>
-        <Link
-          to="/"
-          className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition"
+     
+      <>
+        {/* Hamburger Menu for Small Screens */}
+        <div className="sm:hidden p-4">
+          <button onClick={() => setIsOpen(!isOpen)}>
+            <FaBars className="text-2xl" />
+          </button>
+        </div>
+
+        {/* Sidebar */}
+        <div
+          className={`h-screen top-0 w-[200px] fixed bg-lightBlue ${
+            isOpen ? "block" : "hidden"
+          } sm:block `}
         >
-          <FaColumns />
-          <span className="hidden lg:block">Dashboard</span>
-        </Link>
-        <Link
-          to="/new-quotes"
-          className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition"
-        >
-          <FaPlusCircle />
-          <span className="hidden lg:block">New Quotes</span>
-        </Link>
-        <Link
-          to="/orders"
-          className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition"
-        >
-          <FaClipboardList />
-          <span className="hidden lg:block">Orders</span>
-        </Link>
-        <Link
-          to="/payments"
-          className="flex items-center gap-4 py-3 px-4 hover:bg-blue-300 transition"
-        >
-          <FaCreditCard />
-          <span className="hidden lg:block">Payments</span>
-        </Link>
-      </ul>
-    </div>
+          <div className="w-full flex justify-end sm:hidden ">
+            <IoMdClose onClick={()=>setIsOpen(false)} className="mx-2 my-1" size={35} />
+          </div>
+          <div className="flex flex-col items-start py-6 px-5 ">
+            <p className="text-2xl mb-5 font-bold">Client</p>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `w-full flex gap-4 items-center text-lg py-2 hover:text-red-600 ${
+                  isActive ? "text-red-600" : "text-gray-700"
+                }`
+              }
+            >
+              <FaColumns />
+              Dashboard
+            </NavLink>
+            <NavLink
+              to="/new-quotes"
+              className={({ isActive }) =>
+                `w-full flex gap-4 items-center text-lg py-2 hover:text-red-600 ${
+                  isActive ? "text-red-600" : "text-gray-700"
+                }`
+              }
+            >
+              <FaPlusCircle />
+              New Quotes
+            </NavLink>
+            <NavLink
+              to="/orders"
+              className={({ isActive }) =>
+                `w-full flex gap-4 items-center text-lg py-2 hover:text-red-600 ${
+                  isActive ? "text-red-600" : "text-gray-700"
+                }`
+              }
+            >
+              <FaClipboardList />
+              Orders
+            </NavLink>
+            <NavLink
+              to="/payments"
+              className={({ isActive }) =>
+                `w-full flex gap-4 items-center text-lg py-2 hover:text-red-600 ${
+                  isActive ? "text-red-600" : "text-gray-700"
+                }`
+              }
+            >
+              <FaCreditCard />
+              Payments
+            </NavLink>
+          </div>
+        </div>
+      </>
   );
 };
 

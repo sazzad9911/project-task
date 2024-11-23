@@ -1,6 +1,5 @@
 const NewQuotes = () => {
-    return <h1 className="text-2xl">New Quotes</h1>;
-  };
-  
-  export default NewQuotes;
-  
+  return <div className="p-4 sm:ml-[200px]">New Quotes Page</div>;
+};
+
+export default NewQuotes;
