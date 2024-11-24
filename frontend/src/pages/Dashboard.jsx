@@ -10,16 +10,16 @@ const Dashboard = () => {
       <p className="text-2xl font-semibold mt-5">My Dashboard</p>
 
       <div className="mt-5 flex gap-20">
-        <div className="w-[200px] h-[100px] bg-lightBlue rounded-lg flex justify-center items-center">
+        <div className="w-[200px] h-[100px] bg-[#CAD3FF] rounded-lg flex justify-center items-center">
           <p className="font-semibold">22 Orders</p>
         </div>
 
-        <div className="w-[200px] h-[100px] bg-lightBlue rounded-lg flex justify-center items-center">
+        <div className="w-[200px] h-[100px] bg-[#CAD3FF] rounded-lg flex justify-center items-center">
           <p className="font-semibold">22 Payments</p>
         </div>
       </div>
 
-      <div className="w-[90%] ml-[10%] mt-10 flex flex-col justify-start items-start">
+      <div className="w-[90%] ml-[9%] mt-10 flex flex-col justify-start items-start">
         <p className="font-semibold">Recent Quotes</p>
 
         <div className="w-full mt-5">
@@ -86,9 +86,20 @@ const DashboardComponent = ({ img, place, budget, text, feet, status, updateDate
         <div className="mt-3 mr-3 flex flex-col items-center">
           <p className="font-medium">Update At: {updateDate}</p>
 
-          <button className="mt-5 p-2 pl-4 pr-4 bg-lightBlue rounded-md">
-            Update Now
-          </button>
+          {status === "APPROVED" ? (
+            <div className="flex gap-3 mt-5">
+              <button className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md">
+                Reject
+              </button>
+              <button className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md">
+                Accept
+              </button>
+            </div>
+          ) : (
+            <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
+              Update Now
+            </button>
+          )}
         </div>
       </div>
     </div>

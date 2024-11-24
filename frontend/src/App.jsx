@@ -12,7 +12,7 @@ const App = () => {
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 bg-gray-100 p-4">
+      <div className="flex-1 bg- p-4">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/new-quotes" element={<NewQuotes />} />
