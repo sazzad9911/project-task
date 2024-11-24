@@ -6,10 +6,11 @@ import Orders from "./pages/Orders";
 import Payments from "./pages/Payments";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
+import ForgotPassword from "./components/ForgotPassword";
 
 const App = () => {
   return (
-    <div className="flex h-screen">
+    <div className="">
       {/* Sidebar */}
       <Sidebar />
 
@@ -24,8 +25,9 @@ const App = () => {
       </div>
 
       {/* <Routes>
-      <Route path="/Signup" element={<Signup />} />
-      <Route path="/Login" element={<Login />} />
+        <Route path="/Signup" element={<Signup />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes> */}
     </div>
   );
