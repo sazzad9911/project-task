@@ -9,7 +9,7 @@ import Login from "./components/Login";
 
 const App = () => {
   return (
-    <div className="flex h-screen">
+    <div className="">
       {/* Sidebar */}
       {/* <Sidebar /> */}
 
