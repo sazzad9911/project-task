@@ -9,24 +9,24 @@ import Login from "./components/Login";
 
 const App = () => {
   return (
-    <div className="">
+    <div className="flex h-screen">
       {/* Sidebar */}
-      {/* <Sidebar /> */}
+      <Sidebar />
 
       {/* Main Content */}
-      {/* <div className="flex-1 bg- p-4">
+      <div className="flex-1 bg- p-4">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/new-quotes" element={<NewQuotes />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/payments" element={<Payments />} />
         </Routes>
-      </div> */}
+      </div>
 
-      <Routes>
+      {/* <Routes>
       <Route path="/Signup" element={<Signup />} />
       <Route path="/Login" element={<Login />} />
-      </Routes>
+      </Routes> */}
     </div>
   );
 };
