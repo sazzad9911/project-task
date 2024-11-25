@@ -93,7 +93,7 @@ const DashboardComponent = ({ img, place, budget, text, feet, status, updateDate
           <div className="flex gap-20">
             <div>
               <p className="font-medium">{place}</p>
-              <p className="font-medium">{budget} TK</p>
+              <p className="font-medium">{budget} $</p>
             </div>
             <div>
               <p className="font-medium">{feet}/feet</p>
