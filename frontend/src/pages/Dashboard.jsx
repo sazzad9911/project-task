@@ -7,19 +7,19 @@ import Img2 from "../Data/Img/img-2.jpeg";
 
 const Dashboard = () => {
   return (
-    <div className="w-[80] ml-[10%] h-screen flex flex-col justify-start items-center">
-      <p className="text-2xl font-semibold mt-5">My Dashboard</p>
+    <div className="md:w-[80] md:ml-[10%] md:h-screen flex flex-col justify-start items-center">
+      <p className="text-xl md:text-2xl font-semibold md:mt-5">My Dashboard</p>
 
-      <div className="mt-5 flex gap-20">
-        <div className="w-[200px] h-[100px] bg-[#CAD3FF] rounded-lg flex justify-center items-center">
+      <div className="mt-5 flex flex-col md:flex-row md:gap-20">
+        <div className="w-[150px] h-[50px] md:w-[200px] md:h-[100px] bg-[#CAD3FF] rounded-lg flex justify-center items-center">
           <p className="font-semibold">22 Orders</p>
         </div>
-        <div className="w-[200px] h-[100px] bg-[#CAD3FF] rounded-lg flex justify-center items-center">
+        <div className="w-[150px] h-[50px] md:w-[200px] md:h-[100px] mt-3 md:mt-0 bg-[#CAD3FF] rounded-lg flex justify-center items-center">
           <p className="font-semibold">22 Payments</p>
         </div>
       </div>
 
-      <div className="w-[90%] ml-[9%] mt-10 flex flex-col justify-start items-start">
+      <div className="w-full md:w-[90%] md:ml-[9%] mt-5 md:mt-10 flex flex-col justify-start items-start">
         <p className="font-semibold">Recent Quotes</p>
         <div className="w-full mt-5">
           <DashboardComponent
@@ -83,12 +83,12 @@ const DashboardComponent = ({ img, place, budget, text, feet, status, updateDate
 
 
   return (
-    <div className="w-full h-[140px] mb-3 flex rounded-md bg-[#D9D9D9]">
-      <div className="w-1/4">
+    <div className="w-full md:h-[140px] mb-3 flex flex-col md:flex-row items-center md:items-start rounded-md bg-[#D9D9D9]">
+      <div className="w-[60%] md:w-1/4 mt-5 md:mt-0">
         <img alt="Property" src={img} className="w-full h-[140px] shadow rounded-md" />
       </div>
 
-      <div className="w-3/4 flex justify-between">
+      <div className="w-full md:w-3/4 flex flex-col md:flex-row justify-between items-center md:items-start">
         <div className="mt-3 ml-3">
           <div className="flex gap-20">
             <div>
@@ -106,7 +106,7 @@ const DashboardComponent = ({ img, place, budget, text, feet, status, updateDate
           <button className="text-blue-500 underline">More</button>
         </div>
 
-        <div className="mt-3 mr-3 flex flex-col items-center">
+        <div className="mt-3 md:mr-3 mb-5 md:mb-0 flex flex-col items-center">
           <p className="font-medium">Updated At: {updateDate}</p>
           {status === "APPROVED" ? (
             <div className="flex gap-3 mt-5">

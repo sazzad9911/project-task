@@ -52,10 +52,10 @@ const NewQuotes = () => {
   };
 
   return (
-    <div className="w-[70] ml-[19%] h-screen  flex flex-col justify-start items-center">
-      <p className="text-2xl font-semibold mt-5">New Quotes</p>
-        <form className="w-full p-12" onSubmit={handleSubmit}>
-          <div className="flex justify-between gap-4 mb-5">
+    <div className="md:w-[70] md:ml-[19%] md:h-screen flex flex-col justify-start items-center">
+      <p className="text-xl md:text-2xl font-semibold md:mt-5">New Quotes</p>
+        <form className="w-full p-5 md:p-12" onSubmit={handleSubmit}>
+          <div className="flex flex-col md:flex-row justify-between gap-4 mb-5">
             <div className="w-full">
               <label htmlFor="address" className="block font-medium mb-1">
                 Property Address
@@ -109,7 +109,7 @@ const NewQuotes = () => {
               {images.map((image, index) => (
                 <div
                   key={index}
-                  className="relative flex items-center justify-center w-32 h-32 border-2 border-gray-300 rounded-lg bg-gray-100"
+                  className="relative flex items-center justify-center w-24 h-24 md:w-32 md:h-32 border-2 border-gray-300 rounded-lg bg-gray-100"
                 >
                   {image ? (
                     <>
