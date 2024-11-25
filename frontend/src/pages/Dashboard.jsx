@@ -42,6 +42,16 @@ const Dashboard = () => {
             status="APPROVED"
             updateDate="22 Nov 2020"
           />
+
+          <DashboardComponent
+            img={Img1}
+            place="Gulshan Niketon 1/2"
+            budget="13500"
+            text="We will not agree in this budget. Please increase.."
+            feet="1500sq"
+            status="PENDING"
+            updateDate="15 July 2020"
+          />
         </div>
       </div>
     </div>
@@ -95,6 +105,10 @@ const DashboardComponent = ({ img, place, budget, text, feet, status, updateDate
                 Accept
               </button>
             </div>
+          ) : status === "PENDING" ? (
+            <button className="mt-5 p-2 pl-4 pr-4 bg-red-500 text-white rounded-md">
+              Delete Now
+            </button>
           ) : (
             <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
               Update Now
