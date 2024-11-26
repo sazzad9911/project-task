@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import {
-  FaPlusCircle,
+  FaUserCheck,
   FaColumns,
   FaClipboardList,
   FaCreditCard,
@@ -50,15 +50,15 @@ const AdminSidebar = () => {
             Dashboard
           </NavLink>
           <NavLink
-            to="/new-quotes"
+            to="/requests"
             className={({ isActive }) =>
               `w-full flex gap-4 items-center text-lg py-2 hover:text-red-600 ${
                 isActive ? "text-red-600" : "text-gray-700"
               }`
             }
           >
-            <FaPlusCircle />
-            New Quotes
+            <FaUserCheck />
+            Requests
           </NavLink>
           <NavLink
             to="/orders"

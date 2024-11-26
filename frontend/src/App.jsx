@@ -10,6 +10,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import useAuth from "./hooks/useAuth";
 import AdminSidebar from "./components/AdminSideBar";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminRequests from "./pages/AdminRequests";
 
 const App = () => {
   const { user } = useAuth();
@@ -33,7 +34,8 @@ const App = () => {
           <div className="max-w-[1000px] mx-auto">
             <Routes>
               <Route path="/" element={<AdminDashboard />} />
-
+              <Route path="/requests" element={<AdminRequests />} />
+              
             </Routes>
           </div>
         </div>
