@@ -8,15 +8,36 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import useAuth from "./hooks/useAuth";
+import AdminSidebar from "./components/AdminSideBar";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
   const { user } = useAuth();
+
   if (!user) {
     return (
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/sign-up" element={<Signup />} />
       </Routes>
+    );
+  }
+  if (user?.isAdmin) {
+    return (
+      <div className="">
+        {/* Sidebar */}
+        <AdminSidebar />
+
+        {/* Main Content */}
+        <div className="flex-1 sm:ml-[200px] ">
+          <div className="max-w-[1000px] mx-auto">
+            <Routes>
+              <Route path="/" element={<AdminDashboard />} />
+
+            </Routes>
+          </div>
+        </div>
+      </div>
     );
   }
   return (
@@ -35,12 +56,6 @@ const App = () => {
           </Routes>
         </div>
       </div>
-
-      {/* <Routes>
-        <Route path="/Signup" element={<Signup />} />
-        <Route path="/Login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-      </Routes> */}
     </div>
   );
 };
