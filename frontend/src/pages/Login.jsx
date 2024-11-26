@@ -1,20 +1,39 @@
 "use client";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import useAuth from "../hooks/useAuth";
+import { useLoader } from "../providers/LoadingProvider";
+import axios from "axios";
+import url from "../variables/url";
+
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const {login}=useAuth()
+  const {showLoader,hideLoader}=useLoader()
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login Data:", formData);
-    alert("Login successful!");
+    try {
+      showLoader();
+      const res = await axios.post(`${url}/api/users/login`, {
+        email: formData.email,
+        password: formData.password,
+      });
+      login(res.data);
+      alert("Login successful!");
+      window.location.href="/"
+    } catch (error) {
+      alert(error.response.data);
+    } finally {
+      hideLoader();
+    }
   };
 
   return (

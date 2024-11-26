@@ -44,5 +44,30 @@ const createUser = (req, res) => {
     }
   );
 };
+const loginUser = (req, res) => {
+  const { email, password } = req.body;
 
-module.exports = { createUser };
+  // Check if both email and password are provided
+  if (!email || !password) {
+    return res.status(400).send("Email and password are required");
+  }
+
+  // Find the user in the database
+  db.query(
+    `SELECT * FROM users WHERE email = ? AND password = ?`,
+    [email,password],
+    async (err, results) => {
+      if (err) {
+        return res.status(500).send("Error retrieving user");
+      }
+
+      if (results.length === 0) {
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+
+      const user = results[0];
+      res.json(user);
+    }
+  );
+};
+module.exports = { createUser,loginUser };
