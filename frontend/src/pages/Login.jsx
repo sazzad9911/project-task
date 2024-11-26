@@ -20,10 +20,14 @@ const Login = () => {
   return (
     <div className="flex justify-center items-center p-3 min-h-screen bg-gradient-to-r from-purple-400 via-blue-500 to-pink-500">
       <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg space-y-8">
-        <h2 className="text-center text-3xl font-bold text-blue-500 mb-4">Login</h2>
+        <h2 className="text-center text-3xl font-bold text-blue-500 mb-4">
+          Login
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-lg font-medium text-gray-800">Email Address</label>
+            <label className="block text-lg font-medium text-gray-800">
+              Email Address
+            </label>
             <input
               type="email"
               name="email"
@@ -35,7 +39,9 @@ const Login = () => {
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-800">Password</label>
+            <label className="block text-lg font-medium text-gray-800">
+              Password
+            </label>
             <div className="relative">
               <input
                 type={passwordVisible ? "text" : "password"}
@@ -62,14 +68,14 @@ const Login = () => {
             Login
           </button>
         </form>
-        <div className="">
+        {/* <div className="">
           <a href="/forgot-password" className="text-blue-500 hover:text-blue-600">
             Forgot Password
           </a>
-        </div>
+        </div> */}
         <p className="text-center text-sm text-gray-600 mt-4">
           Don&apos;t have an account?{" "}
-          <a href="/signup" className="text-blue-500 hover:text-blue-600">
+          <a href="/sign-up" className="text-blue-500 hover:text-blue-600">
             Sign up
           </a>
         </p>

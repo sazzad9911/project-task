@@ -52,7 +52,7 @@ const NewQuotes = () => {
   };
 
   return (
-    <div className="md:w-[70] md:ml-[19%] md:h-screen flex flex-col justify-start items-center">
+    <div className=" flex flex-col justify-start items-center">
       <p className="text-xl md:text-2xl font-semibold md:mt-5">New Quotes</p>
         <form className="w-full p-5 md:p-12" onSubmit={handleSubmit}>
           <div className="flex flex-col md:flex-row justify-between gap-4 mb-5">
@@ -105,7 +105,7 @@ const NewQuotes = () => {
             <p className="font-medium mb-2">
               Upload 5 pictures of your driveway in different ways:
             </p>
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+            <div className="flex flex-wrap gap-4">
               {images.map((image, index) => (
                 <div
                   key={index}
