@@ -9,12 +9,13 @@ const DashboardComponent = ({
   feet,
   status,
   updateDate,
+  data
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const statusColor =
     status === "REJECTED"
       ? "text-red-500"
-      : status === "APPROVED"
+      : status === "ACCEPTED"
       ? "text-green-500"
       : "text-[#9E7400]";
 
@@ -48,12 +49,12 @@ const DashboardComponent = ({
         className="w-full h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
       />
 
-      <div className="grid xl:grid-cols-3 grid-cols-2 my-2 mx-2 gap-6 flex-1">
+      <div className="grid flex-1 grid-cols-2 gap-6 mx-2 my-2 xl:grid-cols-3">
         <div className=" xl:col-span-2">
-          <div className="xl:flex w-full justify-between">
+          <div className="justify-between w-full xl:flex">
             <div>
               <p className="font-medium">{place}</p>
-              <p className="font-medium">{budget} $</p>
+              <p className="font-medium">{budget} TK</p>
             </div>
             <div className="my-2 xl:my-0">
               <p className="font-medium">{feet}/feet</p>
@@ -63,33 +64,33 @@ const DashboardComponent = ({
             </div>
           </div>
           <div className="mt-2">
-          <p className=" text-sm opacity-70">
+          <p className="text-sm opacity-70">
               <span className="font-semibold">Address: </span>
               Dhaka, sadarga
             </p>
-            <p className=" text-sm opacity-70">
+            <p className="text-sm opacity-70">
               <span className="font-semibold">Admin Note: </span>
               {text}
             </p>
           </div>
         </div>
 
-        <div className="xl:col-span-1 flex-1 ">
+        <div className="flex-1 xl:col-span-1 ">
           <p className="font-medium">Updated At: {updateDate}</p>
           {status === "APPROVED" ? (
             <div className="flex flex-wrap gap-3 mt-5">
               <button
                 onClick={handleModal}
-                className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
+                className="p-2 pl-4 pr-4 text-white bg-red-500 rounded-md"
               >
                 Reject
               </button>
-              <button className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md">
+              <button className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md">
                 Accept
               </button>
             </div>
           ) : status === "PENDING" ? (
-            <button className="mt-5 p-2 pl-4 pr-4 bg-red-500 text-white rounded-md">
+            <button className="p-2 pl-4 pr-4 mt-5 text-white bg-red-500 rounded-md">
               Delete Now
             </button>
           ) : (
@@ -107,9 +108,9 @@ const DashboardComponent = ({
         onCancel={handleModal}
         footer={null}
       >
-        <div className="w-full flex flex-col justify-center items-end">
+        <div className="flex flex-col items-end justify-center w-full">
           <div className="w-full mt-5 mb-5">
-            <label htmlFor="note" className="block font-medium mb-1">
+            <label htmlFor="note" className="block mb-1 font-medium">
               Note:
             </label>
             <textarea
@@ -126,13 +127,13 @@ const DashboardComponent = ({
           <div className="flex gap-3 mt-5">
             <button
               onClick={handleCancel}
-              className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
+              className="p-2 pl-4 pr-4 text-white bg-red-500 rounded-md"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
-              className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md"
+              className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md"
             >
               Done
             </button>
@@ -151,5 +152,6 @@ DashboardComponent.propTypes = {
   feet: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   updateDate: PropTypes.string.isRequired,
+  data:PropTypes.any
 };
 export default DashboardComponent;

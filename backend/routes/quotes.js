@@ -1,8 +1,15 @@
 const express = require("express");
-const { createUser, loginUser } = require("../controllers/userController");
+const { createQuote, updateQuote, deleteByUser, acceptByUser, rejectByUser, acceptByAdmin, rejectByAdmin, getUserOrders } = require("../controllers/quotesController");
+const { basicAuth } = require("../middleware/verifyUser");
 
 const router = express.Router();
 
-router.post("/create", createUser);
-router.post('/login',loginUser)
+router.post("/create",basicAuth, createQuote);
+router.post("/update",basicAuth, updateQuote);
+router.post("/delete",basicAuth, deleteByUser);
+router.post("/accept-user",basicAuth, acceptByUser);
+router.post("/reject-user",basicAuth, rejectByUser);
+router.post("/accept-admin",basicAuth, acceptByAdmin);
+router.post("/reject-admin",basicAuth, rejectByAdmin);
+router.get("/order-user",basicAuth, getUserOrders);
 module.exports = router;
