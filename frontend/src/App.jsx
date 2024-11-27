@@ -6,7 +6,6 @@ import Orders from "./pages/Orders";
 import Payments from "./pages/Payments";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import ForgotPassword from "./pages/ForgotPassword";
 import useAuth from "./hooks/useAuth";
 import AdminSidebar from "./components/AdminSideBar";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -14,7 +13,7 @@ import AdminRequests from "./pages/AdminRequests";
 
 const App = () => {
   const { user } = useAuth();
-
+  //console.log(user);
   if (!user) {
     return (
       <Routes>
@@ -35,7 +34,6 @@ const App = () => {
             <Routes>
               <Route path="/" element={<AdminDashboard />} />
               <Route path="/requests" element={<AdminRequests />} />
-              
             </Routes>
           </div>
         </div>

@@ -31,15 +31,16 @@ const Login = () => {
       window.location.href="/"
     } catch (error) {
       alert(error.response.data);
+      //console.log(error)
     } finally {
       hideLoader();
     }
   };
 
   return (
-    <div className="flex justify-center items-center p-3 min-h-screen bg-gradient-to-r from-purple-400 via-blue-500 to-pink-500">
-      <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg space-y-8">
-        <h2 className="text-center text-3xl font-bold text-blue-500 mb-4">
+    <div className="flex items-center justify-center min-h-screen p-3 bg-gradient-to-r from-purple-400 via-blue-500 to-pink-500">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white shadow-lg rounded-xl">
+        <h2 className="mb-4 text-3xl font-bold text-center text-blue-500">
           Login
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -74,7 +75,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setPasswordVisible(!passwordVisible)}
-                className="absolute right-3 top-6 text-gray-500"
+                className="absolute text-gray-500 right-3 top-6"
               >
                 {passwordVisible ? <FaEyeSlash /> : <FaEye />}
               </button>
@@ -82,7 +83,7 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
+            className="w-full py-3 font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600"
           >
             Login
           </button>
@@ -92,7 +93,7 @@ const Login = () => {
             Forgot Password
           </a>
         </div> */}
-        <p className="text-center text-sm text-gray-600 mt-4">
+        <p className="mt-4 text-sm text-center text-gray-600">
           Don&apos;t have an account?{" "}
           <a href="/sign-up" className="text-blue-500 hover:text-blue-600">
             Sign up

@@ -56,11 +56,11 @@ app.use("/api/users", userRoutes);
 app.use("/api/quotes", quotesRoutes);
 
 // Endpoint to upload multiple images
-app.post("/api/upload", upload.array("pictures", 10), (req, res) => {
+app.post("/api/upload", upload.array("pictures", 5), (req, res) => {
   try {
     const files = req.files;
     if (!files || files.length === 0) {
-      return res.status(400).json({ error: "No files uploaded" });
+      return res.status(400).send("No files uploaded");
     }
 
     const filePaths = files.map((file) => ({

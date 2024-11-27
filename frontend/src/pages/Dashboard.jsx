@@ -1,15 +1,34 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import DashboardComponent from "../components/DashboardComponent";
-import Img1 from "../Data/Img/img-1.png";
-import Img2 from "../Data/Img/img-2.jpeg";
+import axios from "axios";
+import url from "../variables/url";
+import useAuth from "../hooks/useAuth";
 
 const Dashboard = () => {
+  const [data, setData] = useState([]);
+  const { user } = useAuth();
+  useEffect(() => {
+    const credentials = btoa(`${user.email}:${user.password}`);
+    axios
+      .get(`${url}/api/quotes/order-user?type=dashboard`, {
+        headers: {
+          Authorization: `Basic ${credentials}`,
+        },
+      })
+      .then((res) => {
+        setData(res.data);
+        console.log(res.data);
+      });
+  }, []);
   return (
-    <div className=" mx-4 my-5">
-      <p className="text-xl md:text-2xl font-semibold md:mt-5 text-center">My Dashboard</p>
+    <div className="mx-4 my-5 ">
+      <p className="text-xl font-semibold text-center md:text-2xl md:mt-5">
+        My Dashboard
+      </p>
 
-      <div className="my-4 flex justify-center flex-wrap gap-5">
+      <div className="flex flex-wrap justify-center gap-5 my-4">
         <div className=" bg-[#CAD3FF] rounded-lg flex justify-center items-center w-[160px] py-6">
           <p className="font-semibold">22 Orders</p>
         </div>
@@ -18,41 +37,26 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className=" flex flex-col justify-start items-start ">
-        <p className="font-semibold">Recent Quotes</p>
-        <div className=" mt-5 gap-5 flex flex-col w-full">
-          <DashboardComponent
-            img={Img1}
-            place="Gulshan Niketon 1/2"
-            budget="13500"
-            text="We will not agree on this budget. Please increase..."
-            feet="1500sq"
-            status="REJECTED"
-            updateDate="15 July 2020"
-          />
-          <DashboardComponent
-            img={Img2}
-            place="Kajipara, Mirpur"
-            budget="8500"
-            text="We will not agree on this budget. Please increase..."
-            feet="1200sq"
-            status="APPROVED"
-            updateDate="22 Nov 2020"
-          />
-          <DashboardComponent
-            img={Img1}
-            place="Gulshan Niketon 1/2"
-            budget="13500"
-            text="We will not agree on this budget. Please increasesfgfsdg dsgsdf dsgsdfg dsgdsg dsfgdsfg dsfgds sdgds dsfgsd ds dsfds sdgds dsgds d dfgds sdgfds dsgds sd"
-            feet="1500sq"
-            status="PENDING"
-            updateDate="15 July 2020"
-          />
+      <div className="flex flex-col items-start justify-start ">
+        <p className="font-semibold">Recent Quotes({data.length})</p>
+        <div className="flex flex-col w-full gap-5 mt-5 ">
+          {data.map((doc, i) => (
+            <DashboardComponent
+              key={i}
+              img={`${url}${doc.image1}`}
+              place={doc.address}
+              budget={doc.budget}
+              text="We will not agree on this budget. Please increase..."
+              feet="1500sq"
+              status={doc.status}
+              updateDate="15 July 2020"
+              data={doc}
+            />
+          ))}
         </div>
       </div>
     </div>
   );
 };
-
 
 export default Dashboard;

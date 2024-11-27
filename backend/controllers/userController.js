@@ -62,7 +62,7 @@ const loginUser = (req, res) => {
       }
 
       if (results.length === 0) {
-        return res.status(401).json({ error: "Invalid email or password" });
+        return res.status(401).send( "Invalid email or password" );
       }
 
       const user = results[0];
