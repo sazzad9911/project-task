@@ -13,11 +13,13 @@ const AdminDashboardComponent = ({
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalOpen2, setIsModalOpen2] = useState(false);
     const statusColor =
-        status === "REJECTED"
+        status === "UNPAID"
             ? "text-red-500"
-            : status === "APPROVED"
+            : status === "PAID"
                 ? "text-green-500"
-                : "text-[#9E7400]";
+                : status === "APPROVED"
+                    ? "text-green-500"
+                    : "text-[#9E7400]";
 
     const handleModal = () => {
         setIsModalOpen(!isModalOpen);
