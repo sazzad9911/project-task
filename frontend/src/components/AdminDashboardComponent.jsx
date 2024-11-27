@@ -49,28 +49,27 @@ const AdminDashboardComponent = ({
     };
 
 
-    // From for Accept
+    // Accept Modal State and Handlers
     const [formData2, setFormData2] = useState({
         price: "",
-        endDate: "",
         startDate: "",
+        endDate: "",
     });
 
     const handleChange2 = (e) => {
-        setFormData2({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData2({ ...formData2, [name]: value });
     };
 
-
     const handleSubmit2 = () => {
-        console.log("Submitted:", formData2.price);
+        console.log("Submitted Data:", formData2);
         setFormData2({
-            note: "",
+            price: "",
             startDate: "",
             endDate: "",
         });
         setIsModalOpen2(false);
     };
-
 
 
 
@@ -123,10 +122,12 @@ const AdminDashboardComponent = ({
                                 Accept
                             </button>
                         </div>
-                    ) : status === "" ? (
-                        <button className="mt-5 p-2 pl-4 pr-4 bg-red-500 text-white rounded-md">
-                            Delete Now
+                    ) : status === "UNPAID" ? (
+                        <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
+                            Payment Request
                         </button>
+                    ) : status === "PAID" ? (
+                        <></>
                     ) : (
                         <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
                             Update Now

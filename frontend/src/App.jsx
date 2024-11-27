@@ -10,6 +10,8 @@ import useAuth from "./hooks/useAuth";
 import AdminSidebar from "./components/AdminSideBar";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRequests from "./pages/AdminRequests";
+import AdminOrders from "./pages/AdminOrders";
+import AdminPayments from "./pages/AdminPayments";
 
 const App = () => {
   const { user } = useAuth();
@@ -34,6 +36,8 @@ const App = () => {
             <Routes>
               <Route path="/" element={<AdminDashboard />} />
               <Route path="/requests" element={<AdminRequests />} />
+              <Route path="/orders" element={<AdminOrders />} />
+              <Route path="/payments" element={<AdminPayments />} />
             </Routes>
           </div>
         </div>
