@@ -148,7 +148,7 @@ const DashboardComponent = ({
                 <p>
                   <span className="font-semibold">Deadline: </span>
                   {new Date(data.startDate).toDateString()} {" -To- "}
-                   {new Date(data.endDate).toDateString()}
+                  {new Date(data.endDate).toDateString()}
                 </p>
               </>
             ) : (
@@ -162,7 +162,7 @@ const DashboardComponent = ({
 
         <div className="flex-1 xl:col-span-1 ">
           <p className="font-medium">Updated At: {updateDate}</p>
-          {status === "ACCEPTED" && !data.ordered ? (
+          {status === "ACCEPTED" && !data?.ordered ? (
             <div className="flex flex-wrap gap-3 mt-5">
               <button
                 onClick={handleModal}
@@ -184,10 +184,16 @@ const DashboardComponent = ({
             >
               Delete Now
             </button>
-          ) : (
+          ) : status === "REJECT" || status === "REJECTED" ? (
             <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
               Update Now
             </button>
+          ) : data?.ordered && data?.payment_request && !data?.paid ? (
+            <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
+              Pay Now
+            </button>
+          ) : (
+            <></>
           )}
         </div>
       </div>

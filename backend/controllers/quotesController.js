@@ -203,7 +203,6 @@ const acceptByAdmin = (req, res) => {
     ],
     (err, result) => {
       if (err) {
-        
         return res.status(500).send("Error accepting quote");
       }
       res.json(result);
@@ -256,13 +255,48 @@ const getAdminOrders = (req, res) => {
   }
   db.query(
     "SELECT * FROM quotes WHERE ordered=? AND paid=? ORDER BY update_at DESC",
-    [
-      type === "dashboard" ? false : true,
-      type === "payment" ? true : false,
-    ],
+    [type === "dashboard" ? false : true, type === "payment" ? true : false],
     (err, result) => {
       if (err) {
         return res.status(500).send("Error rejecting quote");
+      }
+      res.json(result);
+    }
+  );
+};
+const paymentRequest = (req, res) => {
+  const { id } = req.body;
+  const user = req.user;
+  if (!user?.isAdmin) {
+    return res.status(400).send("Admin is required");
+  }
+  if (!id) {
+    return res.status(400).send("Fields are required!");
+  }
+  db.query(
+    "UPDATE quotes SET payment_request = ? WHERE id = ?",
+    [true, id],
+    (err, result) => {
+      if (err) {
+        return res.status(500).send("Error payment request");
+      }
+      res.json(result);
+    }
+  );
+};
+const makePayment = (req, res) => {
+  const { id } = req.body;
+  const user = req.user;
+
+  if (!id) {
+    return res.status(400).send("Fields are required!");
+  }
+  db.query(
+    "UPDATE quotes SET paid = ? WHERE id = ? AND userId=?",
+    [true, id, user.id],
+    (err, result) => {
+      if (err) {
+        return res.status(500).send("Error payment request");
       }
       res.json(result);
     }
@@ -277,5 +311,7 @@ module.exports = {
   acceptByAdmin,
   rejectByAdmin,
   getUserOrders,
-  getAdminOrders
+  getAdminOrders,
+  paymentRequest,
+  makePayment
 };
