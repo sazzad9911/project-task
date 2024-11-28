@@ -1,263 +1,295 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Modal } from "antd";
 import PropTypes from "prop-types";
+import useAuth from "../hooks/useAuth";
+import url from "../variables/url";
+import axios from "axios";
 const AdminDashboardComponent = ({
-    img,
-    place,
-    budget,
-    text,
-    feet,
-    status,
-    updateDate,
+  img,
+  place,
+  budget,
+  text,
+  feet,
+  status,
+  updateDate,
+  data,
 }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isModalOpen2, setIsModalOpen2] = useState(false);
-    const statusColor =
-        status === "UNPAID"
-            ? "text-red-500"
-            : status === "PAID"
-                ? "text-green-500"
-                : status === "APPROVED"
-                    ? "text-green-500"
-                    : "text-[#9E7400]";
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [height, setHeight] = useState("100%");
+  const { user } = useAuth();
+  const credentials = btoa(`${user.email}:${user.password}`);
+  const ref = useRef();
+  const statusColor =
+    status === "REJECTED"
+      ? "text-red-500"
+      : status === "PAID"
+      ? "text-green-500"
+      : status === "ACCEPTED"
+      ? "text-green-500"
+      : "text-[#9E7400]";
 
-    const handleModal = () => {
-        setIsModalOpen(!isModalOpen);
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
+  const handleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
-    const handleModal2 = () => {
-        setIsModalOpen2(!isModalOpen2);
-    };
-    const handleCancel2 = () => {
-        setIsModalOpen2(false);
-    };
+  const handleModal2 = () => {
+    setIsModalOpen2(!isModalOpen2);
+  };
+  const handleCancel2 = () => {
+    setIsModalOpen2(false);
+  };
 
-    const [formData, setFormData] = useState({
-        note: "",
-    });
+  const [formData, setFormData] = useState({
+    note: "",
+  });
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-    // Note submission
-    const handleSubmit = () => {
-        console.log("Note Submitted:", formData.note);
-        setFormData({ note: "" });
-        setIsModalOpen(false);
-    };
+  // Accept Modal State and Handlers
+  const [formData2, setFormData2] = useState({
+    price: "",
+    startDate: "",
+    endDate: "",
+  });
 
+  const handleChange2 = (e) => {
+    const { name, value } = e.target;
+    setFormData2({ ...formData2, [name]: value });
+  };
 
-    // Accept Modal State and Handlers
-    const [formData2, setFormData2] = useState({
-        price: "",
-        startDate: "",
-        endDate: "",
-    });
+  useEffect(() => {
+    if (ref.current) {
+      setHeight(ref?.current?.offsetHeight);
+    }
+  }, [ref]);
+  const handleAccept = async () => {
+    try {
+      await axios.post(
+        `${url}/api/quotes/accept-admin`,
+        {
+          id: data.id,
+          offerPrice: formData2.price,
+          startDate: formData2.startDate,
+          endDate: formData2.endDate,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${credentials}`,
+          },
+        }
+      );
+      alert("Accepted!");
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+      alert(error.response.data);
+    }
+  };
+  const handleReject = async () => {
+    try {
+      await axios.post(
+        `${url}/api/quotes/reject-admin`,
+        {
+          id: data.id,
+          adminNote: formData.note,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${credentials}`,
+          },
+        }
+      );
+      alert("Rejected!");
+      window.location.reload();
+    } catch (error) {
+      alert(error.response.data);
+    }
+  };
+  return (
+    <div
+      ref={ref}
+      className="w-full flex flex-wrap bg-[#D9D9D9]   min-h-[150px]"
+    >
+      <img
+        alt="Property"
+        src={img}
+        style={{
+          height: height,
+        }}
+        className="w-full hover:opacity-35 cursor-pointer h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
+      />
 
-    const handleChange2 = (e) => {
-        const { name, value } = e.target;
-        setFormData2({ ...formData2, [name]: value });
-    };
+      <div className="grid xl:grid-cols-3 grid-cols-2 my-2 mx-2 gap-6 flex-1">
+        <div className=" xl:col-span-2">
+          <div className="xl:flex w-full justify-between">
+            <div>
+              <p className="font-medium">{place}</p>
+              <p className="font-medium">{budget} TK</p>
+            </div>
+            <div className="my-2 xl:my-0">
+              <p className="font-medium">{feet}/feet</p>
+              <p className="font-medium">
+                Status: <span className={`${statusColor}`}>{status}</span>
+              </p>
+            </div>
+          </div>
+          <div className="mt-2">
+            <p className="text-sm opacity-70">
+              <span className="font-semibold">Client Note: </span>
+              {data.customerNote}
+            </p>
+          </div>
+        </div>
 
-    const handleSubmit2 = () => {
-        console.log("Submitted Data:", formData2);
-        setFormData2({
-            price: "",
-            startDate: "",
-            endDate: "",
-        });
-        setIsModalOpen2(false);
-    };
+        <div className="xl:col-span-1 flex-1 ">
+          <p className="font-medium">Updated At: {updateDate}</p>
+          {status === "PENDING" ? (
+            <div className="flex flex-wrap gap-3 mt-5">
+              <button
+                onClick={handleModal}
+                className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
+              >
+                Reject
+              </button>
+              <button
+                onClick={handleModal2}
+                className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md"
+              >
+                Accept
+              </button>
+            </div>
+          ) : !data.paid && !data.payment_request && data.ordered ? (
+            <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
+              Payment Request
+            </button>
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
 
-
-
-    return (
-        <div className="w-full flex flex-wrap bg-[#D9D9D9] cursor-pointer hover:bg-slate-200 min-h-[150px]">
-            <img
-                alt="Property"
-                src={img}
-                className="w-full h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
+      <Modal
+        title={`Reject Offer on "${place}"`}
+        open={isModalOpen}
+        onOk={handleModal}
+        onCancel={handleModal}
+        footer={null}
+      >
+        <div className="w-full flex flex-col justify-center items-end">
+          <div className="w-full mt-5 mb-5">
+            <label htmlFor="note" className="block font-medium mb-1">
+              Note:
+            </label>
+            <textarea
+              id="note"
+              name="note"
+              placeholder="Write a note"
+              value={formData.note}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-[#CAD3FF]"
+              rows={3}
             />
+          </div>
 
-            <div className="grid xl:grid-cols-3 grid-cols-2 my-2 mx-2 gap-6 flex-1">
-                <div className=" xl:col-span-2">
-                    <div className="xl:flex w-full justify-between">
-                        <div>
-                            <p className="font-medium">{place}</p>
-                            <p className="font-medium">{budget} $</p>
-                        </div>
-                        <div className="my-2 xl:my-0">
-                            <p className="font-medium">{feet}/feet</p>
-                            <p className="font-medium">
-                                Status: <span className={`${statusColor}`}>{status}</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div className="mt-2">
-                        <p className=" text-sm opacity-70">
-                            <span className="font-semibold">Address: </span>
-                            Dhaka, sadarga
-                        </p>
-                        <p className=" text-sm opacity-70">
-                            <span className="font-semibold">Admin Note: </span>
-                            {text}
-                        </p>
-                    </div>
-                </div>
+          <div className="flex gap-3 mt-5">
+            <button
+              onClick={handleCancel}
+              className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleReject}
+              className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </Modal>
 
-                <div className="xl:col-span-1 flex-1 ">
-                    <p className="font-medium">Updated At: {updateDate}</p>
-                    {status === "PENDING" ? (
-                        <div className="flex flex-wrap gap-3 mt-5">
-                            <button
-                                onClick={handleModal}
-                                className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
-                            >
-                                Reject
-                            </button>
-                            <button onClick={handleModal2}
-                                className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md">
-                                Accept
-                            </button>
-                        </div>
-                    ) : status === "UNPAID" ? (
-                        <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
-                            Payment Request
-                        </button>
-                    ) : status === "PAID" ? (
-                        <></>
-                    ) : (
-                        <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
-                            Update Now
-                        </button>
-                    )}
-                </div>
+      <Modal
+        title={`Accept Offer on "${place}"`}
+        open={isModalOpen2}
+        onOk={handleModal2}
+        onCancel={handleModal2}
+        footer={null}
+      >
+        <div className="w-full flex flex-col justify-center items-end">
+          <div className="w-full mt-5 mb-5">
+            <label className="block font-medium">Offer Price</label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handleChange2}
+              placeholder="Price"
+              className="mt-2 w-full border border-gray-300 rounded px-3 py-2 outline-none"
+              required
+            />
+          </div>
+
+          <div className="w-full mb-5 md:flex md:justify-between">
+            <div className="w-full md:w-[45%]">
+              <label className="block font-medium">Start Date</label>
+              <input
+                type="date"
+                name="startDate"
+                value={formData.startDate}
+                onChange={handleChange2}
+                placeholder="Price"
+                className="mt-2 w-full border border-gray-300 rounded px-3 py-2 outline-none"
+                required
+              />
             </div>
 
-            <Modal
-                title={`Reject Offer on "${place}"`}
-                open={isModalOpen}
-                onOk={handleModal}
-                onCancel={handleModal}
-                footer={null}
+            <div className="w-full md:w-[45%] mt-5 md:mt-0">
+              <label className="block font-medium">End Date</label>
+              <input
+                type="date"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleChange2}
+                placeholder="Price"
+                className="mt-2 w-full border border-gray-300 rounded px-3 py-2 outline-none"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-3 mt-5">
+            <button
+              onClick={handleCancel2}
+              className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
             >
-                <div className="w-full flex flex-col justify-center items-end">
-                    <div className="w-full mt-5 mb-5">
-                        <label htmlFor="note" className="block font-medium mb-1">
-                            Note:
-                        </label>
-                        <textarea
-                            id="note"
-                            name="note"
-                            placeholder="Write a note"
-                            value={formData.note}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-[#CAD3FF]"
-                            rows={3}
-                        />
-                    </div>
-
-                    <div className="flex gap-3 mt-5">
-                        <button
-                            onClick={handleCancel}
-                            className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleSubmit}
-                            className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md"
-                        >
-                            Done
-                        </button>
-                    </div>
-                </div>
-            </Modal>
-
-            <Modal
-                title={`Accept Offer on "${place}"`}
-                open={isModalOpen2}
-                onOk={handleModal2}
-                onCancel={handleModal2}
-                footer={null}
+              Cancel
+            </button>
+            <button
+              onClick={handleAccept}
+              className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md"
             >
-                <div className="w-full flex flex-col justify-center items-end">
-                    <div className="w-full mt-5 mb-5">
-                        <label className="block font-medium">Offer Price</label>
-                        <input
-                            type="number"
-                            name="price"
-                            value={formData.price}
-                            onChange={handleChange2}
-                            placeholder="Price"
-                            className="mt-2 w-full border border-gray-300 rounded px-3 py-2 outline-none"
-                            required
-                        />
-                    </div>
-
-                    <div className="w-full mb-5 md:flex md:justify-between">
-                        <div className="w-full md:w-[45%]">
-
-                            <label className="block font-medium">Start Date</label>
-                            <input
-                                type="date"
-                                name="startDate"
-                                value={formData.startDate}
-                                onChange={handleChange2}
-                                placeholder="Price"
-                                className="mt-2 w-full border border-gray-300 rounded px-3 py-2 outline-none"
-                                required
-                            />
-                        </div>
-
-
-                        <div className="w-full md:w-[45%] mt-5 md:mt-0">
-
-                            <label className="block font-medium">End Date</label>
-                            <input
-                                type="date"
-                                name="endDate"
-                                value={formData.endDate}
-                                onChange={handleChange2}
-                                placeholder="Price"
-                                className="mt-2 w-full border border-gray-300 rounded px-3 py-2 outline-none"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex gap-3 mt-5">
-                        <button
-                            onClick={handleCancel2}
-                            className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleSubmit2}
-                            className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md"
-                        >
-                            Accept
-                        </button>
-                    </div>
-                </div>
-            </Modal>
+              Accept
+            </button>
+          </div>
         </div>
-    );
+      </Modal>
+    </div>
+  );
 };
 
 AdminDashboardComponent.propTypes = {
-    img: PropTypes.string.isRequired,
-    place: PropTypes.string.isRequired,
-    budget: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired,
-    feet: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    updateDate: PropTypes.string.isRequired,
+  img: PropTypes.string.isRequired,
+  place: PropTypes.string.isRequired,
+  budget: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  feet: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+  updateDate: PropTypes.string.isRequired,
 };
 export default AdminDashboardComponent;
-

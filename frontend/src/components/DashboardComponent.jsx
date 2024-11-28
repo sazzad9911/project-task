@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Modal } from "antd";
 import PropTypes from "prop-types";
+import useAuth from "../hooks/useAuth";
+import axios from "axios";
+import url from "../variables/url";
 const DashboardComponent = ({
   img,
   place,
@@ -9,14 +12,20 @@ const DashboardComponent = ({
   feet,
   status,
   updateDate,
-  data
+  data,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [height, setHeight] = useState("100%");
+  const { user } = useAuth();
+  const credentials = btoa(`${user.email}:${user.password}`);
+  const ref = useRef();
   const statusColor =
     status === "REJECTED"
       ? "text-red-500"
       : status === "ACCEPTED"
-      ? "text-green-500"
+      ? "text-green-500":
+      status === "REJECT"
+      ? "text-red-500"
       : "text-[#9E7400]";
 
   const handleModal = () => {
@@ -40,13 +49,39 @@ const DashboardComponent = ({
     setFormData({ note: "" });
     setIsModalOpen(false);
   };
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${url}/api/quotes/delete?id=${data.id}`, {
+        headers: {
+          Authorization: `Basic ${credentials}`,
+        },
+      });
+
+      alert("Quote deleted successfully");
+      window.location.reload()
+    } catch (error) {
+      alert(error.response.data);
+    }
+  };
+  //console.log(ref.current.offsetHeight)
+  useEffect(() => {
+    if (ref.current) {
+      setHeight(ref?.current?.offsetHeight);
+    }
+  }, [ref]);
 
   return (
-    <div className="w-full flex flex-wrap bg-[#D9D9D9] cursor-pointer hover:bg-slate-200 min-h-[150px]">
+    <div
+      ref={ref}
+      className="w-full flex flex-wrap bg-[#D9D9D9]  min-h-[150px]"
+    >
       <img
         alt="Property"
         src={img}
-        className="w-full h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
+        style={{
+          height: height,
+        }}
+        className="w-full hover:opacity-35 cursor-pointer h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
       />
 
       <div className="grid flex-1 grid-cols-2 gap-6 mx-2 my-2 xl:grid-cols-3">
@@ -64,20 +99,23 @@ const DashboardComponent = ({
             </div>
           </div>
           <div className="mt-2">
-          <p className="text-sm opacity-70">
-              <span className="font-semibold">Address: </span>
-              Dhaka, sadarga
-            </p>
-            <p className="text-sm opacity-70">
-              <span className="font-semibold">Admin Note: </span>
-              {text}
-            </p>
+            {status === "REJECTED" && !user.isAdmin ? (
+              <p className="text-sm opacity-70">
+                <span className="font-semibold">Admin Note: </span>
+                {data.adminNote}
+              </p>
+            ) : (
+              <p className="text-sm opacity-70">
+                <span className="font-semibold">Client Note: </span>
+                {data.customerNote}
+              </p>
+            )}
           </div>
         </div>
 
         <div className="flex-1 xl:col-span-1 ">
           <p className="font-medium">Updated At: {updateDate}</p>
-          {status === "APPROVED" ? (
+          {status === "ACCEPTED"&&!data.ordered ? (
             <div className="flex flex-wrap gap-3 mt-5">
               <button
                 onClick={handleModal}
@@ -90,7 +128,7 @@ const DashboardComponent = ({
               </button>
             </div>
           ) : status === "PENDING" ? (
-            <button className="p-2 pl-4 pr-4 mt-5 text-white bg-red-500 rounded-md">
+            <button onClick={handleDelete} className="p-2 pl-4 pr-4 mt-5 text-white bg-red-500 rounded-md">
               Delete Now
             </button>
           ) : (
@@ -152,6 +190,6 @@ DashboardComponent.propTypes = {
   feet: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   updateDate: PropTypes.string.isRequired,
-  data:PropTypes.any
+  data: PropTypes.any,
 };
 export default DashboardComponent;

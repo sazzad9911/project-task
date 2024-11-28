@@ -98,7 +98,7 @@ const updateQuote = (req, res) => {
 
   // Insert the quote into the database
   db.query(
-    `UPDATE quotes SET address = ?, area = ?, budget = ?, image1 = ?, image2 = ?, image3 = ?, image4 = ?, image5 = ?, customerNote = ? WHERE id = ?`,
+    `UPDATE quotes SET address = ?, area = ?, budget = ?, image1 = ?, image2 = ?, image3 = ?, image4 = ?, image5 = ?, customerNote = ?,status=? WHERE id = ?`,
     [
       address,
       area,
@@ -109,6 +109,7 @@ const updateQuote = (req, res) => {
       image4,
       image5,
       customerNote,
+      "PENDING",
       id,
     ],
     (err, results) => {
@@ -132,7 +133,7 @@ const updateQuote = (req, res) => {
   );
 };
 const deleteByUser = (req, res) => {
-  const { id } = req.body;
+  const { id } = req.query;
   const user = req.user;
   if (!id) {
     return res.status(400).send("Fields are required");
@@ -173,7 +174,7 @@ const rejectByUser = (req, res) => {
   }
   db.query(
     "UPDATE quotes SET status = ?, customerNote = ? WHERE id = ? AND userId = ?",
-    ["REJECTED", customerNote, id, user.id],
+    ["REJECT", customerNote, id, user.id],
     (err, result) => {
       if (err) {
         return res.status(500).send("Error rejecting quote");
@@ -192,17 +193,17 @@ const acceptByAdmin = (req, res) => {
     return res.status(400).send("Fields are required!");
   }
   db.query(
-    "UPDATE quotes SET status = ?, offerPrice = ?,startDate=?,endDate=? WHERE id = ? AND userId = ?",
+    "UPDATE quotes SET status = ?, offerPrice = ?,startDate=?,endDate=? WHERE id = ?",
     [
       "ACCEPTED",
       offerPrice,
-      startDate.toISOString().slice(0, 19).replace("T", " "),
-      endDate.toISOString().slice(0, 19).replace("T", " "),
+      new Date(startDate).toISOString().slice(0, 19).replace("T", " "),
+      new Date(endDate).toISOString().slice(0, 19).replace("T", " "),
       id,
-      user.id,
     ],
     (err, result) => {
       if (err) {
+        
         return res.status(500).send("Error accepting quote");
       }
       res.json(result);
@@ -219,8 +220,8 @@ const rejectByAdmin = (req, res) => {
     return res.status(400).send("Fields are required!");
   }
   db.query(
-    "UPDATE quotes SET status = ?, adminNote = ? WHERE id = ? AND userId = ?",
-    ["REJECTED", adminNote, id, user.id],
+    "UPDATE quotes SET status = ?, adminNote = ? WHERE id = ?",
+    ["REJECTED", adminNote, id],
     (err, result) => {
       if (err) {
         return res.status(500).send("Error rejecting quote");
@@ -247,6 +248,26 @@ const getUserOrders = (req, res) => {
     }
   );
 };
+const getAdminOrders = (req, res) => {
+  const { type } = req.query;
+  const user = req.user;
+  if (!user?.isAdmin) {
+    return res.status(400).send("Admin is required");
+  }
+  db.query(
+    "SELECT * FROM quotes WHERE ordered=? AND paid=? ORDER BY update_at DESC",
+    [
+      type === "dashboard" ? false : true,
+      type === "payment" ? true : false,
+    ],
+    (err, result) => {
+      if (err) {
+        return res.status(500).send("Error rejecting quote");
+      }
+      res.json(result);
+    }
+  );
+};
 module.exports = {
   createQuote,
   updateQuote,
@@ -255,5 +276,6 @@ module.exports = {
   rejectByUser,
   acceptByAdmin,
   rejectByAdmin,
-  getUserOrders
+  getUserOrders,
+  getAdminOrders
 };

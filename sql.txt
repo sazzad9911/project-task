@@ -32,12 +32,13 @@ CREATE TABLE quotes (
     image5 VARCHAR(100) NOT NULL, 
     customerNote VARCHAR(255), 
     adminNote VARCHAR(255), 
-    status ENUM('PENDING', 'ACCEPTED', 'REJECTED') DEFAULT 'PENDING', 
+    status ENUM('PENDING', 'ACCEPTED', 'REJECTED','REJECT') DEFAULT 'PENDING', 
     paid BOOLEAN DEFAULT false, 
     offerPrice DOUBLE, 
     startDate DATE, 
     endDate DATE,
     userId INT,
     ordered BOOLEAN DEFAULT false,
+    payment_request BOOLEAN DEFAULT false,
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
     );

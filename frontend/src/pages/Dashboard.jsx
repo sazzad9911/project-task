@@ -19,7 +19,7 @@ const Dashboard = () => {
       })
       .then((res) => {
         setData(res.data);
-        console.log(res.data);
+        //console.log(res.data);
       });
   }, []);
   return (
@@ -45,11 +45,11 @@ const Dashboard = () => {
               key={i}
               img={`${url}${doc.image1}`}
               place={doc.address}
-              budget={doc.budget}
+              budget={doc.budget.toString()}
               text="We will not agree on this budget. Please increase..."
-              feet="1500sq"
+              feet={`${doc.area}sq`}
               status={doc.status}
-              updateDate="15 July 2020"
+              updateDate={new Date(doc.update_at).toDateString()}
               data={doc}
             />
           ))}

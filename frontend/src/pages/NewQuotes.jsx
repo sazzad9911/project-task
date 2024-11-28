@@ -192,7 +192,7 @@ const NewQuotes = () => {
             required
             id="note"
             name="note"
-            placeholder="Write a note (optional)"
+            placeholder="Write a note"
             value={formData.note}
             onChange={handleChange}
             className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-[#CAD3FF]"

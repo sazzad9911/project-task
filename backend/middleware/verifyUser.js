@@ -8,7 +8,7 @@ const basicAuth = (req, res, next) => {
     if (!authHeader || !authHeader.startsWith("Basic ")) {
       return res
         .status(401)
-        .json({ message: "Authorization header missing or invalid!" });
+        .send( "Authorization header missing or invalid!" );
     }
 
     // Decode the Base64-encoded credentials
@@ -19,7 +19,7 @@ const basicAuth = (req, res, next) => {
     const [email, password] = credentials.split(":");
 
     if (!email || !password) {
-      return res.status(401).json({ message: "Email or password missing!" });
+      return res.status(401).send( "Email or password missing!" );
     }
 
     // Verify the user exists
@@ -32,7 +32,7 @@ const basicAuth = (req, res, next) => {
         }
 
         if (results.length === 0) {
-          return res.status(401).json({ error: "Invalid email or password" });
+          return res.status(401).send( "Invalid email or password" );
         }
 
         const user = results[0];
@@ -43,7 +43,7 @@ const basicAuth = (req, res, next) => {
     );
   } catch (error) {
     console.error("Error in Basic Authentication Middleware:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).send( "Internal Server Error" );
   }
 };
 
