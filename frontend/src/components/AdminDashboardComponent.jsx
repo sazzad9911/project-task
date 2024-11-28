@@ -16,6 +16,7 @@ const AdminDashboardComponent = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [isModalOpen3, setIsModalOpen3] = useState(false);
   const [height, setHeight] = useState("100%");
   const { user } = useAuth();
   const credentials = btoa(`${user.email}:${user.password}`);
@@ -24,10 +25,10 @@ const AdminDashboardComponent = ({
     status === "REJECTED" || status === "REJECT"
       ? "text-red-500"
       : status === "PAID"
-      ? "text-green-500"
-      : status === "ACCEPTED"
-      ? "text-green-500"
-      : "text-[#9E7400]";
+        ? "text-green-500"
+        : status === "ACCEPTED"
+          ? "text-green-500"
+          : "text-[#9E7400]";
 
   const handleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -42,6 +43,14 @@ const AdminDashboardComponent = ({
   const handleCancel2 = () => {
     setIsModalOpen2(false);
   };
+
+  // For Img view 
+  const handleModal3 = () => {
+    setIsModalOpen3(!isModalOpen3);
+  };
+  // const handleCancel3 = () => {
+  //   setIsModalOpen3(false);
+  // };
 
   const [formData, setFormData] = useState({
     note: "",
@@ -68,6 +77,8 @@ const AdminDashboardComponent = ({
       setHeight(ref?.current?.offsetHeight);
     }
   }, [ref]);
+
+
   const handleAccept = async () => {
     try {
       await axios.post(
@@ -141,6 +152,7 @@ const AdminDashboardComponent = ({
         style={{
           height: height,
         }}
+        onClick={handleModal3}
         className="w-full hover:opacity-35 cursor-pointer h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
       />
 
@@ -155,7 +167,7 @@ const AdminDashboardComponent = ({
               <p className="font-medium">{feet}/feet</p>
               {data?.ordered ? (
                 <p className="font-medium">
-                  Status: <span className={`${data.paid?"text-green-500":"text-red-500"}`}>{data.paid?"PAID":"UNPAID"}</span>
+                  Status: <span className={`${data.paid ? "text-green-500" : "text-red-500"}`}>{data.paid ? "PAID" : "UNPAID"}</span>
                 </p>
               ) : (
                 <p className="font-medium">
@@ -319,6 +331,70 @@ const AdminDashboardComponent = ({
             >
               Accept
             </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        title="View All Images"
+        open={isModalOpen3}
+        onOk={handleModal3}
+        onCancel={handleModal3}
+        footer={null}
+      >
+        <div className="w-full flex flex-col justify-center items-start">
+          <div className="">
+
+            <p className="text-xl mt-5 mb-3 font-serif">Image -1</p>
+            <img
+              alt="Property"
+              src={img}
+              style={{
+                height: height,
+              }}
+              onClick={handleModal3}
+              className=""
+            />
+            <p className="text-xl mt-5 mb-3 font-serif">Image -2</p>
+            <img
+              alt="Property"
+              src={img}
+              style={{
+                height: height,
+              }}
+              onClick={handleModal3}
+              className=""
+            />
+            <p className="text-xl mt-5 mb-3 font-serif">Image -3</p>
+            <img
+              alt="Property"
+              src={img}
+              style={{
+                height: height,
+              }}
+              onClick={handleModal3}
+              className=""
+            />
+            <p className="text-xl mt-5 mb-3 font-serif">Image -4</p>
+            <img
+              alt="Property"
+              src={img}
+              style={{
+                height: height,
+              }}
+              onClick={handleModal3}
+              className=""
+            />
+            <p className="text-xl mt-5 mb-3 font-serif">Image -5</p>
+            <img
+              alt="Property"
+              src={img}
+              style={{
+                height: height,
+              }}
+              onClick={handleModal3}
+              className=""
+            />
           </div>
         </div>
       </Modal>

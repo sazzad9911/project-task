@@ -15,6 +15,7 @@ const DashboardComponent = ({
   data,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
   const [height, setHeight] = useState("100%");
   const { user } = useAuth();
   const credentials = btoa(`${user.email}:${user.password}`);
@@ -23,16 +24,23 @@ const DashboardComponent = ({
     status === "REJECTED"
       ? "text-red-500"
       : status === "ACCEPTED"
-      ? "text-green-500"
-      : status === "REJECT"
-      ? "text-red-500"
-      : "text-[#9E7400]";
+        ? "text-green-500"
+        : status === "REJECT"
+          ? "text-red-500"
+          : "text-[#9E7400]";
 
   const handleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const handleModal2 = () => {
+    setIsModalOpen2(!isModalOpen2);
+  };
+  const handleCancel2 = () => {
+    setIsModalOpen2(false);
   };
 
   const [formData, setFormData] = useState({
@@ -127,7 +135,7 @@ const DashboardComponent = ({
   return (
     <div
       ref={ref}
-      className="w-full flex flex-wrap bg-[#D9D9D9]  min-h-[150px]"
+      className="w-full flex flex-wrap bg-[#D9D9D9] min-h-[150px]"
     >
       <img
         alt="Property"
@@ -135,7 +143,7 @@ const DashboardComponent = ({
         style={{
           height: height,
         }}
-        className="w-full max-h-[300px] hover:opacity-35 cursor-pointer h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
+        className="w-full max-h-[300px] hover:opacity-35 h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
       />
 
       <div className="grid flex-1 grid-cols-2 gap-6 mx-2 my-2 xl:grid-cols-3">
@@ -151,9 +159,8 @@ const DashboardComponent = ({
                 <p className="font-medium">
                   Status:{" "}
                   <span
-                    className={`${
-                      data.paid ? "text-green-500" : "text-red-500"
-                    }`}
+                    className={`${data.paid ? "text-green-500" : "text-red-500"
+                      }`}
                   >
                     {data.paid ? "PAID" : "UNPAID"}
                   </span>
@@ -217,7 +224,8 @@ const DashboardComponent = ({
               Delete Now
             </button>
           ) : status === "REJECT" || status === "REJECTED" ? (
-            <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
+            <button onClick={handleModal2}
+              className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
               Update Now
             </button>
           ) : data?.ordered && data?.payment_request && !data?.paid ? (
@@ -272,6 +280,105 @@ const DashboardComponent = ({
           </div>
         </div>
       </Modal>
+
+      <Modal
+        title={`Update Orders "${place}"`}
+        open={isModalOpen2}
+        onCancel={handleModal2}
+        footer={null}
+      >
+        <div className="flex flex-col items-center justify-center w-full">
+          <form className="w-full">
+            <div className="mb-4">
+              <label htmlFor="address" className="block mb-2 font-medium">
+                Property Address:
+              </label>
+              <input
+                id="address"
+                name="address"
+                type="text"
+                placeholder={place}
+                className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-[#CAD3FF]"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="area" className="block mb-2 font-medium">
+                Area of the Driveway (sq. feet):
+              </label>
+              <input
+                id="area"
+                name="area"
+                type="number"
+                placeholder={feet}
+                className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-[#CAD3FF]"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="budget" className="block mb-2 font-medium">
+                Budget:
+              </label>
+              <input
+                id="budget"
+                name="budget"
+                type="number"
+                placeholder={budget}
+                className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-[#CAD3FF]"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="images" className="block mb-2 font-medium">
+                Upload 5 pictures of your driveway in different ways:
+              </label>
+              <div className="grid grid-cols-5 gap-2">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="border border-gray-300 p-3 rounded">
+                    <input type="file" className="hidden" id={`upload-${index}`} />
+                    <label
+                      htmlFor={`upload-${index}`}
+                      className="cursor-pointer flex items-center justify-center text-sm"
+                    >
+                      Upload
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="note" className="block mb-2 font-medium">
+                Note:
+              </label>
+              <textarea
+                id="note"
+                name="note"
+                placeholder="Write a note"
+                className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-[#CAD3FF]"
+                rows={3}
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 mt-5">
+              <button
+                type="button"
+                onClick={handleCancel2}
+                className="p-2 pl-4 pr-4 text-white bg-red-500 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md"
+              >
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+      </Modal>
+
     </div>
   );
 };
