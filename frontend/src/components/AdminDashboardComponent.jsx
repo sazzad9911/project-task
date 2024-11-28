@@ -21,7 +21,7 @@ const AdminDashboardComponent = ({
   const credentials = btoa(`${user.email}:${user.password}`);
   const ref = useRef();
   const statusColor =
-    status === "REJECTED"
+    status === "REJECTED"|| status==="REJECT"
       ? "text-red-500"
       : status === "PAID"
       ? "text-green-500"
@@ -140,10 +140,24 @@ const AdminDashboardComponent = ({
             </div>
           </div>
           <div className="mt-2">
-            <p className="text-sm opacity-70">
-              <span className="font-semibold">Client Note: </span>
-              {data.customerNote}
-            </p>
+            {data.status === "ACCEPTED" ? (
+              <>
+                <p>
+                  <span className="font-semibold">Offer Price: </span>
+                  {data.offerPrice} Tk
+                </p>
+                <p>
+                  <span className="font-semibold">Deadline: </span>
+                  {new Date(data.startDate).toDateString()}
+                  {" -To- "}{new Date(data.endDate).toDateString()}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm opacity-70">
+                <span className="font-semibold">Client Note: </span>
+                {data.customerNote}
+              </p>
+            )}
           </div>
         </div>
 

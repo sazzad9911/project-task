@@ -116,7 +116,7 @@ const DashboardComponent = ({
         style={{
           height: height,
         }}
-        className="w-full hover:opacity-35 cursor-pointer h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
+        className="w-full max-h-[300px] hover:opacity-35 cursor-pointer h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
       />
 
       <div className="grid flex-1 grid-cols-2 gap-6 mx-2 my-2 xl:grid-cols-3">
@@ -139,6 +139,18 @@ const DashboardComponent = ({
                 <span className="font-semibold">Admin Note: </span>
                 {data.adminNote}
               </p>
+            ) : status === "ACCEPTED" ? (
+              <>
+                <p>
+                  <span className="font-semibold">Offer Price: </span>
+                  {data.offerPrice} Tk
+                </p>
+                <p>
+                  <span className="font-semibold">Deadline: </span>
+                  {new Date(data.startDate).toDateString()} {" -To- "}
+                   {new Date(data.endDate).toDateString()}
+                </p>
+              </>
             ) : (
               <p className="text-sm opacity-70">
                 <span className="font-semibold">Client Note: </span>
@@ -158,7 +170,10 @@ const DashboardComponent = ({
               >
                 Reject
               </button>
-              <button onClick={handleAccept} className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md">
+              <button
+                onClick={handleAccept}
+                className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md"
+              >
                 Accept
               </button>
             </div>
