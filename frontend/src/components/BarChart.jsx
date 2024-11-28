@@ -1,4 +1,3 @@
-
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -11,21 +10,28 @@ import {
 } from "chart.js";
 
 // Register required Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-const BarChart = () => {
+const BarChart = ({ monthly }) => {
   // Chart data
+ 
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June"],
+    labels:  monthly.reduce((total, item) => { total.push(item.month); return total;}, []),
     datasets: [
       {
-        label: "Sales",
-        data: [3000, 2000, 4000, 5000, 3500, 4500],
+        label: "Revenue",
+        data: monthly.reduce((total, item) => { total.push(item.revenue); return total;}, []),
         backgroundColor: "rgba(75, 192, 192, 0.7)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
-      
     ],
   };
 

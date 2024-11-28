@@ -147,9 +147,22 @@ const DashboardComponent = ({
             </div>
             <div className="my-2 xl:my-0">
               <p className="font-medium">{feet}/feet</p>
-              <p className="font-medium">
-                Status: <span className={`${statusColor}`}>{status}</span>
-              </p>
+              {data?.ordered ? (
+                <p className="font-medium">
+                  Status:{" "}
+                  <span
+                    className={`${
+                      data.paid ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {data.paid ? "PAID" : "UNPAID"}
+                  </span>
+                </p>
+              ) : (
+                <p className="font-medium">
+                  Status: <span className={`${statusColor}`}>{status}</span>
+                </p>
+              )}
             </div>
           </div>
           <div className="mt-2">
@@ -208,7 +221,10 @@ const DashboardComponent = ({
               Update Now
             </button>
           ) : data?.ordered && data?.payment_request && !data?.paid ? (
-            <button onClick={handlePay} className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
+            <button
+              onClick={handlePay}
+              className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md"
+            >
               Pay Now
             </button>
           ) : (

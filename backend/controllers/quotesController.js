@@ -302,6 +302,106 @@ const makePayment = (req, res) => {
     }
   );
 };
+const calculateMonthlyRevenue = (data) => {
+  const monthNames = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC",
+  ];
+
+  const today = new Date();
+  const monthlyRevenue = {};
+
+  // Generate the last 6 months in "MONTH YYYY" format
+  const last6Months = Array.from({ length: 6 }, (_, i) => {
+    const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+    const year = date.getFullYear();
+    const month = monthNames[date.getMonth()]; // Get month name
+    return `${month} ${year}`; // Format as "MONTH YYYY"
+  }).reverse(); // Reverse to make it chronological
+
+  // Initialize revenue for each of the last 6 months to 0
+  last6Months.forEach((month) => {
+    monthlyRevenue[month] = 0;
+  });
+
+  // Populate revenue from the data
+  data.forEach((item) => {
+    const updateDate = new Date(item.update_at);
+    const year = updateDate.getFullYear();
+    const month = monthNames[updateDate.getMonth()]; // Get month name
+    const yearMonth = `${month} ${year}`; // Format as "MONTH YYYY"
+
+    if (monthlyRevenue[yearMonth] !== undefined) {
+      monthlyRevenue[yearMonth] += item.offerPrice;
+    }
+  });
+
+  // Convert the object to an array of JSON objects
+  const result = Object.entries(monthlyRevenue).map(([key, value]) => ({
+    month: key,
+    revenue: value,
+  }));
+
+  return result;
+};
+
+const getDashboardInfo = async (req, res) => {
+  const user = req.user;
+  try {
+    if (user.isAdmin) {
+      const result = await db.query(
+        "SELECT offerPrice,update_at FROM quotes WHERE paid = ?",
+        [true]
+      );
+      const [order] = await db.query(
+        "SELECT COUNT(*) AS totalOrder FROM quotes WHERE ordered = ? AND paid = ?",
+        [true, false]
+      );
+      const [payment] = await db.query(
+        "SELECT COUNT(*) AS totalPayment FROM quotes WHERE ordered = ? AND paid = ?",
+        [true, true]
+      );
+      const totalRevenue = result.reduce(
+        (total, item) => total + item.offerPrice,
+        0
+      );
+      const monthlyRevenue = calculateMonthlyRevenue(result);
+
+      return res.json({
+        totalOrder: order.totalOrder,
+        totalPayment: payment.totalPayment,
+        totalRevenue: totalRevenue,
+        monthly: monthlyRevenue,
+      });
+    } else {
+      const [order] = await db.query(
+        "SELECT COUNT(*) AS totalOrder FROM quotes WHERE ordered = ? AND paid = ? AND userId=?",
+        [true, false, user.id]
+      );
+      const [payment] = await db.query(
+        "SELECT COUNT(*) AS totalPayment FROM quotes WHERE ordered = ? AND paid = ? AND userId=?",
+        [true, true, user.id]
+      );
+      res.json({
+        totalOrder: order.totalOrder,
+        totalPayment: payment.totalPayment,
+      });
+    }
+  } catch (error) {
+    //console.log(error);
+    res.status(500).send("Error getting");
+  }
+};
 module.exports = {
   createQuote,
   updateQuote,
@@ -313,5 +413,6 @@ module.exports = {
   getUserOrders,
   getAdminOrders,
   paymentRequest,
-  makePayment
+  makePayment,
+  getDashboardInfo,
 };

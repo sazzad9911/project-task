@@ -9,6 +9,11 @@ import useAuth from "../hooks/useAuth";
 const Dashboard = () => {
   const [data, setData] = useState([]);
   const { user } = useAuth();
+  const [dashboardData, setDashboardData] = useState({
+    totalOrder: 0,
+    totalPayment: 0,
+  });
+
   useEffect(() => {
     const credentials = btoa(`${user.email}:${user.password}`);
     axios
@@ -21,6 +26,16 @@ const Dashboard = () => {
         setData(res.data);
         //console.log(res.data);
       });
+    axios
+      .get(`${url}/api/quotes/dashboard`, {
+        headers: {
+          Authorization: `Basic ${credentials}`,
+        },
+      })
+      .then((res) => {
+        setDashboardData(res.data);
+        //console.log(res.data);
+      });
   }, []);
   return (
     <div className="mx-4 my-5 ">
@@ -30,10 +45,10 @@ const Dashboard = () => {
 
       <div className="flex flex-wrap justify-center gap-5 my-4">
         <div className=" bg-[#CAD3FF] rounded-lg flex justify-center items-center w-[160px] py-6">
-          <p className="font-semibold">22 Orders</p>
+          <p className="font-semibold">{dashboardData.totalOrder} Orders</p>
         </div>
         <div className=" bg-[#CAD3FF] rounded-lg flex justify-center items-center w-[160px] py-6">
-          <p className="font-semibold">22 Payments</p>
+          <p className="font-semibold">{dashboardData.totalPayment} Payments</p>
         </div>
       </div>
 
