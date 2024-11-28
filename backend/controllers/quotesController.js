@@ -98,7 +98,7 @@ const updateQuote = (req, res) => {
 
   // Insert the quote into the database
   db.query(
-    `UPDATE quotes SET address = ?, area = ?, budget = ?, image1 = ?, image2 = ?, image3 = ?, image4 = ?, image5 = ?, customerNote = ?,status=? WHERE id = ?`,
+    `UPDATE quotes SET address = ?, area = ?, budget = ?, image1 = ?, image2 = ?, image3 = ?, image4 = ?, image5 = ?, customerNote = ?,status=?,update_at=? WHERE id = ?`,
     [
       address,
       area,
@@ -110,10 +110,12 @@ const updateQuote = (req, res) => {
       image5,
       customerNote,
       "PENDING",
+      new Date().toISOString().slice(0, 19).replace("T", " "),
       id,
     ],
     (err, results) => {
       if (err) {
+        console.log(err)
         return res.status(500).send("Error updating quotes");
       }
 

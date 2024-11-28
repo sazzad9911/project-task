@@ -84,7 +84,7 @@ const AdminDashboardComponent = ({
       await axios.post(
         `${url}/api/quotes/accept-admin`,
         {
-          id: data.id,
+          id: data?.id,
           offerPrice: formData2.price,
           startDate: formData2.startDate,
           endDate: formData2.endDate,
@@ -156,9 +156,9 @@ const AdminDashboardComponent = ({
         className="w-full hover:opacity-35 cursor-pointer h-full md:max-w-[200px] md:min-h-full rounded-md object-cover"
       />
 
-      <div className="grid xl:grid-cols-3 grid-cols-2 my-2 mx-2 gap-6 flex-1">
+      <div className="grid flex-1 grid-cols-2 gap-6 mx-2 my-2 xl:grid-cols-3">
         <div className=" xl:col-span-2">
-          <div className="xl:flex w-full justify-between">
+          <div className="justify-between w-full xl:flex">
             <div>
               <p className="font-medium">{place}</p>
               <p className="font-medium">{budget} TK</p>
@@ -199,19 +199,19 @@ const AdminDashboardComponent = ({
           </div>
         </div>
 
-        <div className="xl:col-span-1 flex-1 ">
+        <div className="flex-1 xl:col-span-1 ">
           <p className="font-medium">Updated At: {updateDate}</p>
           {status === "PENDING" ? (
             <div className="flex flex-wrap gap-3 mt-5">
               <button
                 onClick={handleModal}
-                className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
+                className="p-2 pl-4 pr-4 text-white bg-red-500 rounded-md"
               >
                 Reject
               </button>
               <button
                 onClick={handleModal2}
-                className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md"
+                className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md"
               >
                 Accept
               </button>
@@ -236,9 +236,9 @@ const AdminDashboardComponent = ({
         onCancel={handleModal}
         footer={null}
       >
-        <div className="w-full flex flex-col justify-center items-end">
+        <div className="flex flex-col items-end justify-center w-full">
           <div className="w-full mt-5 mb-5">
-            <label htmlFor="note" className="block font-medium mb-1">
+            <label htmlFor="note" className="block mb-1 font-medium">
               Note:
             </label>
             <textarea
@@ -255,13 +255,13 @@ const AdminDashboardComponent = ({
           <div className="flex gap-3 mt-5">
             <button
               onClick={handleCancel}
-              className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
+              className="p-2 pl-4 pr-4 text-white bg-red-500 rounded-md"
             >
               Cancel
             </button>
             <button
               onClick={handleReject}
-              className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md"
+              className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md"
             >
               Done
             </button>
@@ -276,7 +276,7 @@ const AdminDashboardComponent = ({
         onCancel={handleModal2}
         footer={null}
       >
-        <div className="w-full flex flex-col justify-center items-end">
+        <div className="flex flex-col items-end justify-center w-full">
           <div className="w-full mt-5 mb-5">
             <label className="block font-medium">Offer Price</label>
             <input
@@ -285,7 +285,7 @@ const AdminDashboardComponent = ({
               value={formData.price}
               onChange={handleChange2}
               placeholder="Price"
-              className="mt-2 w-full border border-gray-300 rounded px-3 py-2 outline-none"
+              className="w-full px-3 py-2 mt-2 border border-gray-300 rounded outline-none"
               required
             />
           </div>
@@ -299,7 +299,7 @@ const AdminDashboardComponent = ({
                 value={formData.startDate}
                 onChange={handleChange2}
                 placeholder="Price"
-                className="mt-2 w-full border border-gray-300 rounded px-3 py-2 outline-none"
+                className="w-full px-3 py-2 mt-2 border border-gray-300 rounded outline-none"
                 required
               />
             </div>
@@ -312,7 +312,7 @@ const AdminDashboardComponent = ({
                 value={formData.endDate}
                 onChange={handleChange2}
                 placeholder="Price"
-                className="mt-2 w-full border border-gray-300 rounded px-3 py-2 outline-none"
+                className="w-full px-3 py-2 mt-2 border border-gray-300 rounded outline-none"
                 required
               />
             </div>
@@ -321,13 +321,13 @@ const AdminDashboardComponent = ({
           <div className="flex gap-3 mt-5">
             <button
               onClick={handleCancel2}
-              className="p-2 pl-4 pr-4 bg-red-500 text-white rounded-md"
+              className="p-2 pl-4 pr-4 text-white bg-red-500 rounded-md"
             >
               Cancel
             </button>
             <button
               onClick={handleAccept}
-              className="p-2 pl-4 pr-4 bg-green-500 text-white rounded-md"
+              className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md"
             >
               Accept
             </button>
@@ -342,10 +342,10 @@ const AdminDashboardComponent = ({
         onCancel={handleModal3}
         footer={null}
       >
-        <div className="w-full flex flex-col justify-center items-start">
+        <div className="flex flex-col items-start justify-center w-full">
           <div className="">
 
-            <p className="text-xl mt-5 mb-3 font-serif">Image -1</p>
+            <p className="mt-5 mb-3 font-serif text-xl">Image -1</p>
             <img
               alt="Property"
               src={img}
@@ -355,40 +355,40 @@ const AdminDashboardComponent = ({
               onClick={handleModal3}
               className=""
             />
-            <p className="text-xl mt-5 mb-3 font-serif">Image -2</p>
+            <p className="mt-5 mb-3 font-serif text-xl">Image -2</p>
             <img
               alt="Property"
-              src={img}
+              src={url+data.image2}
               style={{
                 height: height,
               }}
               onClick={handleModal3}
               className=""
             />
-            <p className="text-xl mt-5 mb-3 font-serif">Image -3</p>
+            <p className="mt-5 mb-3 font-serif text-xl">Image -3</p>
             <img
               alt="Property"
-              src={img}
+              src={url+data.image3}
               style={{
                 height: height,
               }}
               onClick={handleModal3}
               className=""
             />
-            <p className="text-xl mt-5 mb-3 font-serif">Image -4</p>
+            <p className="mt-5 mb-3 font-serif text-xl">Image -4</p>
             <img
               alt="Property"
-              src={img}
+              src={url+data.image4}
               style={{
                 height: height,
               }}
               onClick={handleModal3}
               className=""
             />
-            <p className="text-xl mt-5 mb-3 font-serif">Image -5</p>
+            <p className="mt-5 mb-3 font-serif text-xl">Image -5</p>
             <img
               alt="Property"
-              src={img}
+              src={url+data.image5}
               style={{
                 height: height,
               }}

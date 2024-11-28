@@ -5,7 +5,7 @@ const { basicAuth } = require("../middleware/verifyUser");
 const router = express.Router();
 
 router.post("/create",basicAuth, createQuote);
-router.post("/update",basicAuth, updateQuote);
+router.put("/update",basicAuth, updateQuote);
 router.delete("/delete",basicAuth, deleteByUser);
 router.post("/accept-user",basicAuth, acceptByUser);
 router.post("/reject-user",basicAuth, rejectByUser);
