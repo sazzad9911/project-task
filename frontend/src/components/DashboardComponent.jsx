@@ -23,8 +23,8 @@ const DashboardComponent = ({
     status === "REJECTED"
       ? "text-red-500"
       : status === "ACCEPTED"
-      ? "text-green-500":
-      status === "REJECT"
+      ? "text-green-500"
+      : status === "REJECT"
       ? "text-red-500"
       : "text-[#9E7400]";
 
@@ -43,12 +43,6 @@ const DashboardComponent = ({
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Note submission
-  const handleSubmit = () => {
-    console.log("Note Submitted:", formData.note);
-    setFormData({ note: "" });
-    setIsModalOpen(false);
-  };
   const handleDelete = async () => {
     try {
       await axios.delete(`${url}/api/quotes/delete?id=${data.id}`, {
@@ -58,7 +52,7 @@ const DashboardComponent = ({
       });
 
       alert("Quote deleted successfully");
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
       alert(error.response.data);
     }
@@ -69,6 +63,47 @@ const DashboardComponent = ({
       setHeight(ref?.current?.offsetHeight);
     }
   }, [ref]);
+  const handleAccept = async () => {
+    try {
+      await axios.post(
+        `${url}/api/quotes/accept-user`,
+        {
+          id: data.id,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${credentials}`,
+          },
+        }
+      );
+
+      alert("Accepted");
+      window.location.reload();
+    } catch (error) {
+      alert(error.response.data);
+    }
+  };
+  const handleReject = async () => {
+    try {
+      await axios.post(
+        `${url}/api/quotes/reject-user`,
+        {
+          id: data.id,
+          customerNote: formData.note,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${credentials}`,
+          },
+        }
+      );
+
+      alert("Rejected!");
+      window.location.reload();
+    } catch (error) {
+      alert(error.response.data);
+    }
+  };
 
   return (
     <div
@@ -115,7 +150,7 @@ const DashboardComponent = ({
 
         <div className="flex-1 xl:col-span-1 ">
           <p className="font-medium">Updated At: {updateDate}</p>
-          {status === "ACCEPTED"&&!data.ordered ? (
+          {status === "ACCEPTED" && !data.ordered ? (
             <div className="flex flex-wrap gap-3 mt-5">
               <button
                 onClick={handleModal}
@@ -123,12 +158,15 @@ const DashboardComponent = ({
               >
                 Reject
               </button>
-              <button className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md">
+              <button onClick={handleAccept} className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md">
                 Accept
               </button>
             </div>
           ) : status === "PENDING" ? (
-            <button onClick={handleDelete} className="p-2 pl-4 pr-4 mt-5 text-white bg-red-500 rounded-md">
+            <button
+              onClick={handleDelete}
+              className="p-2 pl-4 pr-4 mt-5 text-white bg-red-500 rounded-md"
+            >
               Delete Now
             </button>
           ) : (
@@ -170,7 +208,7 @@ const DashboardComponent = ({
               Cancel
             </button>
             <button
-              onClick={handleSubmit}
+              onClick={handleReject}
               className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md"
             >
               Done
