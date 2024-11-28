@@ -13,6 +13,6 @@ router.post("/accept-admin",basicAuth, acceptByAdmin);
 router.post("/reject-admin",basicAuth, rejectByAdmin);
 router.get("/order-user",basicAuth, getUserOrders);
 router.get("/order-admin",basicAuth, getAdminOrders);
-router.get("/payment-request",basicAuth, paymentRequest);
-router.get("/pay",basicAuth, makePayment);
+router.post("/payment-request",basicAuth, paymentRequest);
+router.post("/pay",basicAuth, makePayment);
 module.exports = router;

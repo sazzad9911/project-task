@@ -104,7 +104,26 @@ const DashboardComponent = ({
       alert(error.response.data);
     }
   };
+  const handlePay = async () => {
+    try {
+      await axios.post(
+        `${url}/api/quotes/pay`,
+        {
+          id: data.id,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${credentials}`,
+          },
+        }
+      );
 
+      alert("Paid!");
+      window.location.reload();
+    } catch (error) {
+      alert(error.response.data);
+    }
+  };
   return (
     <div
       ref={ref}
@@ -189,7 +208,7 @@ const DashboardComponent = ({
               Update Now
             </button>
           ) : data?.ordered && data?.payment_request && !data?.paid ? (
-            <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
+            <button onClick={handlePay} className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
               Pay Now
             </button>
           ) : (

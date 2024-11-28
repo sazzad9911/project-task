@@ -111,6 +111,25 @@ const AdminDashboardComponent = ({
       alert(error.response.data);
     }
   };
+  const handlePaymentRequest = async () => {
+    try {
+      await axios.post(
+        `${url}/api/quotes/payment-request`,
+        {
+          id: data.id,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${credentials}`,
+          },
+        }
+      );
+      alert("Requested!");
+      window.location.reload();
+    } catch (error) {
+      alert(error.response.data);
+    }
+  };
   return (
     <div
       ref={ref}
@@ -179,7 +198,7 @@ const AdminDashboardComponent = ({
               </button>
             </div>
           ) : !data.paid && !data.payment_request && data.ordered ? (
-            <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
+            <button onClick={handlePaymentRequest} className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
               Payment Request
             </button>
           ) : (
