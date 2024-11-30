@@ -1,5 +1,5 @@
 const express = require("express");
-const { createQuote, updateQuote, deleteByUser, acceptByUser, rejectByUser, acceptByAdmin, rejectByAdmin, getUserOrders, getAdminOrders, paymentRequest, makePayment, getDashboardInfo } = require("../controllers/quotesController");
+const { createQuote, updateQuote, deleteByUser, acceptByUser, rejectByUser, acceptByAdmin, rejectByAdmin, getUserOrders, getAdminOrders, paymentRequest, makePayment, getDashboardInfo, getQuotesReport, getLargestDriveway, getOverdueBills } = require("../controllers/quotesController");
 const { basicAuth } = require("../middleware/verifyUser");
 
 const router = express.Router();
@@ -16,4 +16,7 @@ router.get("/order-admin",basicAuth, getAdminOrders);
 router.post("/payment-request",basicAuth, paymentRequest);
 router.post("/pay",basicAuth, makePayment);
 router.get("/dashboard",basicAuth,getDashboardInfo)
+router.get("/report",basicAuth,getQuotesReport)
+router.get("/area",basicAuth,getLargestDriveway)
+router.get("/overdue",basicAuth,getOverdueBills)
 module.exports = router;

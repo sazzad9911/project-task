@@ -51,6 +51,7 @@ const BarChart = ({ monthly }) => {
 
   return (
     <div className="w-full md:w-full md:h-[500px] mx-auto">
+  
       <Bar data={data} options={options} />
     </div>
   );

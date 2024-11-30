@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminRequests from "./pages/AdminRequests";
 import AdminOrders from "./pages/AdminOrders";
 import AdminPayments from "./pages/AdminPayments";
+import Clients from "./pages/Clients";
 
 const App = () => {
   const { user } = useAuth();
@@ -38,6 +39,7 @@ const App = () => {
               <Route path="/requests" element={<AdminRequests />} />
               <Route path="/orders" element={<AdminOrders />} />
               <Route path="/payments" element={<AdminPayments />} />
+              <Route path="/clients" element={<Clients />} />
             </Routes>
           </div>
         </div>

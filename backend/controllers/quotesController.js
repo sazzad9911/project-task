@@ -115,7 +115,7 @@ const updateQuote = (req, res) => {
     ],
     (err, results) => {
       if (err) {
-        console.log(err)
+        console.log(err);
         return res.status(500).send("Error updating quotes");
       }
 
@@ -266,7 +266,7 @@ const getAdminOrders = (req, res) => {
     }
   );
 };
-const paymentRequest = (req, res) => {
+const paymentRequest = async (req, res) => {
   const { id } = req.body;
   const user = req.user;
   if (!user?.isAdmin) {
@@ -275,34 +275,43 @@ const paymentRequest = (req, res) => {
   if (!id) {
     return res.status(400).send("Fields are required!");
   }
-  db.query(
-    "UPDATE quotes SET payment_request = ? WHERE id = ?",
-    [true, id],
-    (err, result) => {
-      if (err) {
-        return res.status(500).send("Error payment request");
-      }
-      res.json(result);
-    }
-  );
+  try {
+    await db.query("UPDATE quotes SET payment_request = ? WHERE id = ?", [
+      true,
+      id,
+    ]);
+    const updateRes = await db.query(
+      "SELECT offerPrice,userId FROM quotes WHERE id=?",
+      [id]
+    );
+    // Check if the quote exists
+    if (updateRes.length === 0) {
+      return res.status(404).send("Quote not found");
+    } // Insert a new record into the receipt table
+    await db.query(
+      "INSERT INTO receipt (amount, userId, quoteId) VALUES (?, ?, ?)",
+      [updateRes[0].offerPrice, updateRes[0].userId, id]
+    ); // Send a success response
+    res.status(200).send("Payment request updated and receipt created");
+  } catch (error) {
+    res.status(500).send("Error payment request");
+  }
 };
-const makePayment = (req, res) => {
+const makePayment = async(req, res) => {
   const { id } = req.body;
   const user = req.user;
 
   if (!id) {
     return res.status(400).send("Fields are required!");
   }
-  db.query(
-    "UPDATE quotes SET paid = ? WHERE id = ? AND userId=?",
-    [true, id, user.id],
-    (err, result) => {
-      if (err) {
-        return res.status(500).send("Error payment request");
-      }
-      res.json(result);
-    }
-  );
+  try {
+    await db.query("UPDATE quotes SET paid = ? WHERE id = ? AND userId=?",[true, id, user.id])
+    await db.query("UPDATE receipt SET paid = ?,paid_at=? WHERE quoteId=?",[true,new Date().toISOString().slice(0, 19).replace("T", " "),id])
+    res.json("Payment complete");
+  } catch (error) {
+    res.status(500).send("Error payment request");
+  }
+  
 };
 const calculateMonthlyRevenue = (data) => {
   const monthNames = [
@@ -404,6 +413,96 @@ const getDashboardInfo = async (req, res) => {
     res.status(500).send("Error getting");
   }
 };
+const getQuotesReport = async (req, res) => {
+  try {
+    // Query to fetch all accepted quotes
+    const result = await db.query("SELECT * FROM quotes WHERE status = ?", [
+      "ACCEPTED",
+    ]);
+
+    // Function to group results by month and year using update_at
+    const groupByMonth = (data) => {
+      return data.reduce((acc, quote) => {
+        const date = new Date(quote.update_at);
+        const monthYear = `${date
+          .toLocaleString("default", { month: "long" })
+          .toUpperCase()} ${date.getFullYear()}`;
+        if (!acc[monthYear]) acc[monthYear] = [];
+        acc[monthYear].push(quote);
+        return acc;
+      }, {});
+    };
+
+    // Group the results by month and year
+    const groupedResults = groupByMonth(result);
+    const keys = Object.keys(groupedResults);
+    // Get the month from query parameters, or use the first key if no month is specified
+    const { month } = req.query;
+    // Send the grouped results as JSON
+    res.json({
+      keys: keys,
+      data: groupedResults[month ? month : keys[0]] || [],
+    });
+  } catch (error) {
+    res.status(500).send("Error getting quotes report");
+  }
+};
+const getLargestDriveway = async (req, res) => {
+  try {
+    // Query to fetch the quotes ordered by area descending
+    const result = await db.query("SELECT * FROM quotes ORDER BY area DESC");
+
+    // Check if result is not empty
+    if (result.length === 0) {
+      return res.status(404).send("No quotes found");
+    }
+
+    // Find the maximum area
+    const maxArea = result[0].area;
+
+    // Filter the quotes with the maximum area
+    const topArea = result.filter((r) => r.area === maxArea);
+
+    // Send the response
+    res.json(topArea);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error getting largest driveway quotes");
+  }
+};
+const getOverdueBills = async (req, res) => {
+  try {
+    // Query to fetch overdue bills
+    const result = await db.query(`
+      SELECT 
+        r.amount,
+        r.create_at,
+        u.firstName,
+        u.lastName,
+        u.phone,
+        q.address,
+        q.area
+      FROM 
+        receipt r
+      JOIN 
+        users u ON r.userId = u.id
+      JOIN 
+        quotes q ON r.quoteId = q.id
+      WHERE 
+        r.create_at < NOW() - INTERVAL 7 DAY AND r.paid=false;
+    `);
+
+    // Send the result as a JSON response
+    res.json(result);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error getting overdue bills");
+  }
+};
+
+
+
 module.exports = {
   createQuote,
   updateQuote,
@@ -417,4 +516,7 @@ module.exports = {
   paymentRequest,
   makePayment,
   getDashboardInfo,
+  getQuotesReport,
+  getLargestDriveway,
+  getOverdueBills
 };

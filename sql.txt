@@ -42,3 +42,13 @@ CREATE TABLE quotes (
     payment_request BOOLEAN DEFAULT false,
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
     );
+
+CREATE TABLE receipt(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    amount DOUBLE NOT NULL,
+    userId INT,
+    quoteId INT,
+    paid BOOLEAN DEFAULT false,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    paid_at DATE
+);

@@ -5,6 +5,7 @@ import {
   FaClipboardList,
   FaCreditCard,
   FaBars,
+  FaFilter,
 } from "react-icons/fa";
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
@@ -17,7 +18,7 @@ const AdminSidebar = () => {
   return (
     <>
       {/* Hamburger Menu for Small Screens */}
-      <div className="sm:hidden p-4">
+      <div className="p-4 sm:hidden">
         <button onClick={() => setIsOpen(!isOpen)}>
           <FaBars className="text-2xl" />
         </button>
@@ -29,15 +30,15 @@ const AdminSidebar = () => {
           isOpen ? "block" : "hidden"
         } sm:block `}
       >
-        <div className="w-full flex justify-end sm:hidden ">
+        <div className="flex justify-end w-full sm:hidden ">
           <IoMdClose
             onClick={() => setIsOpen(false)}
             className="mx-2 my-1"
             size={35}
           />
         </div>
-        <div className="flex flex-col items-start py-6 px-5 ">
-          <p className="text-2xl mb-5 font-bold">Admin</p>
+        <div className="flex flex-col items-start px-5 py-6 ">
+          <p className="mb-5 text-2xl font-bold">Admin</p>
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -81,6 +82,17 @@ const AdminSidebar = () => {
           >
             <FaCreditCard />
             Payments
+          </NavLink>
+          <NavLink
+            to="/clients"
+            className={({ isActive }) =>
+              `w-full flex gap-4 items-center text-lg py-2 hover:text-red-600 ${
+                isActive ? "text-red-600" : "text-gray-700"
+              }`
+            }
+          >
+           <FaFilter />
+            Filters
           </NavLink>
           <div
             onClick={() => {
