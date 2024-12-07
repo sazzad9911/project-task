@@ -161,7 +161,7 @@ const AdminDashboardComponent = ({
           <div className="justify-between w-full xl:flex">
             <div>
               <p className="font-medium">{place}</p>
-              <p className="font-medium">{budget} TK</p>
+              <p className="font-medium">{budget} $</p>
             </div>
             <div className="my-2 xl:my-0">
               <p className="font-medium">{feet}/feet</p>
@@ -181,7 +181,7 @@ const AdminDashboardComponent = ({
               <>
                 <p>
                   <span className="font-semibold">Offer Price: </span>
-                  {data.offerPrice} Tk
+                  {data.offerPrice} $
                 </p>
                 <p>
                   <span className="font-semibold">Deadline: </span>
