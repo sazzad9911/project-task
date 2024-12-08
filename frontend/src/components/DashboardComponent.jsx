@@ -352,12 +352,20 @@ const DashboardComponent = ({
               Update Now
             </button>
           ) : data?.ordered && data?.payment_request && !data?.paid ? (
-            <button
-              onClick={handlePay}
-              className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md"
-            >
-              Pay Now
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handlePay}
+                className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md"
+              >
+                Pay Now
+              </button>
+              <button
+                onClick={handlePay}
+                className="mt-5 p-2 pl-4 pr-4 bg-[#c23737] text-white rounded-md"
+              >
+                Cancel
+              </button>
+            </div>
           ) : (
             <></>
           )}
