@@ -1,5 +1,5 @@
 const express = require("express");
-const { createQuote, updateQuote, deleteByUser, acceptByUser, rejectByUser, acceptByAdmin, rejectByAdmin, getUserOrders, getAdminOrders, paymentRequest, makePayment, getDashboardInfo, getQuotesReport, getLargestDriveway, getOverdueBills } = require("../controllers/quotesController");
+const { createQuote, updateQuote, deleteByUser, acceptByUser, rejectByUser, acceptByAdmin, rejectByAdmin, getUserOrders, getAdminOrders, paymentRequest, makePayment, getDashboardInfo, getQuotesReport, getLargestDriveway, getOverdueBills, cancelPaymentByUser, updatePaymentByAdmin } = require("../controllers/quotesController");
 const { basicAuth } = require("../middleware/verifyUser");
 
 const router = express.Router();
@@ -19,4 +19,6 @@ router.get("/dashboard",basicAuth,getDashboardInfo)
 router.get("/report",basicAuth,getQuotesReport)
 router.get("/area",basicAuth,getLargestDriveway)
 router.get("/overdue",basicAuth,getOverdueBills)
+router.put("/payment-reject",basicAuth,cancelPaymentByUser)
+router.put("/payment-update",basicAuth,updatePaymentByAdmin)
 module.exports = router;

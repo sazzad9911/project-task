@@ -191,6 +191,7 @@ const acceptByAdmin = (req, res) => {
   if (!user?.isAdmin) {
     return res.status(400).send("Admin is required");
   }
+  //console.log(id)
   if (!id || !offerPrice || !startDate || !endDate) {
     return res.status(400).send("Fields are required!");
   }
@@ -231,40 +232,42 @@ const rejectByAdmin = (req, res) => {
     }
   );
 };
-const getUserOrders = (req, res) => {
+const getUserOrders = async (req, res) => {
   const { type } = req.query;
   const user = req.user;
-  db.query(
-    "SELECT * FROM quotes WHERE ordered=? AND paid=? AND userId=? ORDER BY update_at DESC",
-    [
-      type === "dashboard" ? false : true,
-      type === "payment" ? true : false,
-      user.id,
-    ],
-    (err, result) => {
-      if (err) {
-        return res.status(500).send("Error rejecting quote");
-      }
-      res.json(result);
-    }
-  );
+  try {
+    const result = await db.query(
+      `SELECT q.*, r.paid,r.payment_status,r.offer
+FROM quotes q 
+LEFT JOIN receipt r ON q.id = r.quoteId 
+WHERE q.ordered = ? AND q.paid = ? AND q.userId = ? 
+ORDER BY q.update_at DESC;`,
+      [
+        type === "dashboard" ? false : true,
+        type === "payment" ? true : false,
+        user.id,
+      ]
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).send("Error rejecting quote");
+  }
 };
-const getAdminOrders = (req, res) => {
+const getAdminOrders = async (req, res) => {
   const { type } = req.query;
   const user = req.user;
   if (!user?.isAdmin) {
     return res.status(400).send("Admin is required");
   }
-  db.query(
-    "SELECT * FROM quotes WHERE ordered=? AND paid=? ORDER BY update_at DESC",
-    [type === "dashboard" ? false : true, type === "payment" ? true : false],
-    (err, result) => {
-      if (err) {
-        return res.status(500).send("Error rejecting quote");
-      }
-      res.json(result);
-    }
-  );
+  try {
+    const result = await db.query(
+      "SELECT q.*, r.paid,r.payment_status,r.offer FROM quotes q LEFT JOIN receipt r ON q.id = r.quoteId AND q.userId = r.userId WHERE q.ordered = ? AND q.paid = ? ORDER BY q.update_at DESC",
+      [type === "dashboard" ? false : true, type === "payment" ? true : false]
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).send("Error rejecting quote");
+  }
 };
 const paymentRequest = async (req, res) => {
   const { id } = req.body;
@@ -297,7 +300,7 @@ const paymentRequest = async (req, res) => {
     res.status(500).send("Error payment request");
   }
 };
-const makePayment = async(req, res) => {
+const makePayment = async (req, res) => {
   const { id } = req.body;
   const user = req.user;
 
@@ -305,13 +308,21 @@ const makePayment = async(req, res) => {
     return res.status(400).send("Fields are required!");
   }
   try {
-    await db.query("UPDATE quotes SET paid = ? WHERE id = ? AND userId=?",[true, id, user.id])
-    await db.query("UPDATE receipt SET paid = ?,paid_at=? WHERE quoteId=?",[true,new Date().toISOString().slice(0, 19).replace("T", " "),id])
+    await db.query("UPDATE quotes SET paid = ? WHERE id = ? AND userId=?", [
+      true,
+      id,
+      user.id,
+    ]);
+    await db.query("UPDATE receipt SET paid = ?,paid_at=?,payment_status=? WHERE quoteId=?", [
+      true,
+      new Date().toISOString().slice(0, 19).replace("T", " "),
+      "ACCEPTED",
+      id,
+    ]);
     res.json("Payment complete");
   } catch (error) {
     res.status(500).send("Error payment request");
   }
-  
 };
 const calculateMonthlyRevenue = (data) => {
   const monthNames = [
@@ -494,14 +505,47 @@ const getOverdueBills = async (req, res) => {
 
     // Send the result as a JSON response
     res.json(result);
-
   } catch (error) {
     console.error(error);
     res.status(500).send("Error getting overdue bills");
   }
 };
-
-
+const cancelPaymentByUser = async (req, res) => {
+  const { id, note } = req.body;
+  if (!id || !note) return res.status(404).send("Not Found");
+  try {
+    const result = await db.query(
+      "UPDATE quotes SET customerNote = ? WHERE id = ?",
+      [note, id]
+    );
+    const repeat = await db.query(
+      "UPDATE receipt SET payment_status=? WHERE quoteId=?",
+      ["REJECTED", id]
+    );
+    res.json(repeat);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error");
+  }
+};
+const updatePaymentByAdmin = async (req, res) => {
+  const { id, note, discount } = req.body;
+  if (!id || !note) return res.status(404).send("Not Found");
+  try {
+    const result = await db.query(
+      "UPDATE quotes SET adminNote = ? WHERE id = ?",
+      [note, id]
+    );
+    const repeat = await db.query(
+      "UPDATE receipt SET payment_status=?,offer=? WHERE quoteId=?",
+      ["PENDING", discount || 0, id]
+    );
+    res.json(repeat);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error");
+  }
+};
 
 module.exports = {
   createQuote,
@@ -518,5 +562,7 @@ module.exports = {
   getDashboardInfo,
   getQuotesReport,
   getLargestDriveway,
-  getOverdueBills
+  getOverdueBills,
+  cancelPaymentByUser,
+  updatePaymentByAdmin,
 };

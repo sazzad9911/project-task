@@ -18,8 +18,10 @@ const DashboardComponent = ({
   const [height, setHeight] = useState("100%");
   const { user } = useAuth();
   const credentials = btoa(`${user.email}:${user.password}`);
-  const [payModal,setPayModal] =useState(false);
+  const [payModal, setPayModal] = useState(false);
   const ref = useRef();
+  console.log(data);
+  const [paymentNote, setPaymentNote] = useState("");
   const statusColor =
     status === "REJECTED"
       ? "text-red-500"
@@ -125,6 +127,27 @@ const DashboardComponent = ({
       alert(error.response.data);
     }
   };
+  const cancelPay = async () => {
+    try {
+      await axios.put(
+        `${url}/api/quotes/payment-reject`,
+        {
+          id: data.id,
+          note: paymentNote,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${credentials}`,
+          },
+        }
+      );
+
+      alert("Cancelled!");
+      window.location.reload();
+    } catch (error) {
+      alert(error.response.data);
+    }
+  };
   return (
     <div
       ref={ref}
@@ -175,8 +198,12 @@ const DashboardComponent = ({
             ) : status === "ACCEPTED" ? (
               <>
                 <p>
-                  <span className="font-semibold">Offer Price: </span>
-                  ${data.offerPrice}
+                  <span className="font-semibold">Offer Price: </span>$
+                  {data.offerPrice}
+                </p>
+                <p>
+                  <span className="font-semibold">Discount Price: </span>$
+                  {data.offer || "0"}
                 </p>
                 <p>
                   <span className="font-semibold">Deadline: </span>
@@ -190,6 +217,12 @@ const DashboardComponent = ({
                 {data.customerNote}
               </p>
             )}
+            {data?.payment_status === "PENDING" ? (
+              <p className="text-sm opacity-70">
+                <span className="font-semibold">Admin Note: </span>
+                {data.adminNote}
+              </p>
+            ) : null}
           </div>
         </div>
 
@@ -221,7 +254,10 @@ const DashboardComponent = ({
             <button className="mt-5 p-2 pl-4 pr-4 bg-[#CAD3FF] rounded-md">
               Update Now
             </button>
-          ) : data?.ordered && data?.payment_request && !data?.paid ? (
+          ) : data?.ordered &&
+            data?.payment_request &&
+            !data?.paid &&
+            data?.payment_status === "PENDING" ? (
             <div className="flex gap-2">
               <button
                 onClick={handlePay}
@@ -230,7 +266,7 @@ const DashboardComponent = ({
                 Pay Now
               </button>
               <button
-                onClick={()=>setPayModal(true)}
+                onClick={() => setPayModal(true)}
                 className="mt-5 p-2 pl-4 pr-4 bg-[#c23737] text-white rounded-md"
               >
                 Cancel
@@ -281,12 +317,12 @@ const DashboardComponent = ({
           </div>
         </div>
       </Modal>
-      
+
       <Modal
         title={`Reject Offer on "${place}"`}
         open={payModal}
-        onOk={()=>setPayModal(false)}
-        onCancel={()=>setPayModal(false)}
+        onOk={() => setPayModal(false)}
+        onCancel={() => setPayModal(false)}
         footer={null}
       >
         <div className="flex flex-col items-end justify-center w-full">
@@ -298,8 +334,8 @@ const DashboardComponent = ({
               id="note"
               name="note"
               placeholder="Write a note"
-              value={formData.note}
-              onChange={handleChange}
+              value={paymentNote}
+              onChange={(e) => setPaymentNote(e.target.value)}
               className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-[#CAD3FF]"
               rows={3}
             />
@@ -307,13 +343,13 @@ const DashboardComponent = ({
 
           <div className="flex gap-3 mt-5">
             <button
-              onClick={handleCancel}
+              onClick={() => setPayModal(false)}
               className="p-2 pl-4 pr-4 text-white bg-red-500 rounded-md"
             >
               Cancel
             </button>
             <button
-              onClick={handleReject}
+              onClick={cancelPay}
               className="p-2 pl-4 pr-4 text-white bg-green-500 rounded-md"
             >
               Done

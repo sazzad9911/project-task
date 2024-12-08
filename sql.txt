@@ -50,5 +50,7 @@ CREATE TABLE receipt(
     quoteId INT,
     paid BOOLEAN DEFAULT false,
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    paid_at DATE
+    paid_at DATE,
+    payment_status ENUM('PENDING', 'ACCEPTED', 'REJECTED') DEFAULT 'PENDING',
+    offer DOUBLE DEFAULT 0
 );
