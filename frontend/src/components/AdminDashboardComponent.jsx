@@ -214,10 +214,12 @@ const AdminDashboardComponent = ({
                   <span className="font-semibold">Offer Price: </span>$
                   {data.offerPrice}
                 </p>
-                <p>
+                {data?.offer?(
+                  <p>
                   <span className="font-semibold">Discount Price: </span>$
                   {data.offer||"0"}
                 </p>
+                ):null}
                 <p>
                   <span className="font-semibold">Deadline: </span>
                   {new Date(data.startDate).toDateString()}
@@ -232,7 +234,7 @@ const AdminDashboardComponent = ({
               </p>
             )}
             {data?.payment_status === "REJECTED" ? (
-              <p className="text-sm opacity-70 mt-1">
+              <p className="mt-1 text-sm opacity-70">
                 <span className="font-semibold">Client Note: </span>
                 {data.customerNote}
               </p>

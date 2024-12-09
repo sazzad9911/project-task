@@ -301,24 +301,30 @@ const paymentRequest = async (req, res) => {
   }
 };
 const makePayment = async (req, res) => {
-  const { id } = req.body;
+  const { id, price } = req.body;
   const user = req.user;
 
-  if (!id) {
+  if (!id || !price) {
     return res.status(400).send("Fields are required!");
   }
   try {
-    await db.query("UPDATE quotes SET paid = ? WHERE id = ? AND userId=?", [
+    await db.query("UPDATE quotes SET paid = ?,offerPrice=? WHERE id = ? AND userId=?", [
       true,
+      price,
       id,
       user.id,
     ]);
-    await db.query("UPDATE receipt SET paid = ?,paid_at=?,payment_status=? WHERE quoteId=?", [
-      true,
-      new Date().toISOString().slice(0, 19).replace("T", " "),
-      "ACCEPTED",
-      id,
-    ]);
+    await db.query(
+      "UPDATE receipt SET paid = ?,paid_at=?,payment_status=?,amount=? WHERE quoteId=?",
+      [
+        true,
+        new Date().toISOString().slice(0, 19).replace("T", " "),
+        "ACCEPTED",
+        price,
+        id,
+      ]
+    );
+    
     res.json("Payment complete");
   } catch (error) {
     res.status(500).send("Error payment request");

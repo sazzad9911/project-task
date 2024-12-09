@@ -113,6 +113,7 @@ const DashboardComponent = ({
         `${url}/api/quotes/pay`,
         {
           id: data.id,
+          price: data?.offerPrice - (data.offer || 0),
         },
         {
           headers: {

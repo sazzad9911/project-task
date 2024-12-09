@@ -74,7 +74,7 @@ const NewQuotes = () => {
       window.location.href="/"
     } catch (error) {
       alert(error.response.data);
-      console.log(error.response.data)
+      console.log(error)
     } finally {
       hideLoader();
     }
